@@ -1,5 +1,6 @@
 package com.pushsl.pushsl;
 
+import com.pushsl.pushsl.Objects.RealTimeBusesAndMetros;
 import com.pushsl.pushsl.Objects.SiteInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,10 +22,14 @@ public class PushslApplicationTests {
     }
 
     @Test
-    public void testApi() {
+    public void testSiteInfoAPI() {
         List<SiteInfo> list = apiData.getSiteInfo("kista");
         list.forEach(System.out::println);
-
     }
 
+    @Test
+    public void testRealTimeAPI() {
+        List<RealTimeBusesAndMetros> list = apiData.getRealTimeInfo("9192", "2");
+        list.forEach(System.out::println);
+    }
 }
