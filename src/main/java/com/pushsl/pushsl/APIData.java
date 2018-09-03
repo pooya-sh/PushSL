@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.pushsl.pushsl.Objects.RealTimeBusesAndMetros;
 import com.pushsl.pushsl.Objects.SiteInfo;
-import org.springframework.boot.jackson.JsonObjectSerializer;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Scanner;
 
 @Component
+@SuppressWarnings("Duplicates")
 public class APIData {
 
 
@@ -31,8 +32,51 @@ public class APIData {
                 + "&stationsonly=" + stationsonly
                 + "&maxresults=" + maxresults;
 
-        String result = "";
+        String result = fetch(urlString);
 
+        Gson gson = new Gson();
+        JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
+        JsonArray array = jsonObject.get("ResponseData").getAsJsonArray();
+        List<SiteInfo> siteInfoList = new ArrayList<>();
+
+        for (int i = 0; i < array.size(); i++) {
+            siteInfoList.add(gson.fromJson(array.get(i), SiteInfo.class));
+        }
+
+        return siteInfoList;
+
+    }
+
+
+    public List<RealTimeBusesAndMetros> getRealTimeInfo(String siteId, String timewindow) {
+        String format = "json";
+        String key = System.getenv("RealTimeKey");
+
+        String urlString = "http://api.sl.se/api2/realtimedeparturesV4." + format
+                + "?key=" + key
+                + "&siteid=" + siteId
+                + "&timewindow=" + timewindow;
+
+        String result = fetch(urlString);
+
+        Gson gson = new Gson();
+        JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
+        JsonArray arraymetros = jsonObject.get("ResponseData").getAsJsonObject().get("Metros").getAsJsonArray();
+        List<RealTimeBusesAndMetros> realTimeList = new ArrayList<>();
+
+        for (int i = 0; i < arraymetros.size(); i++) {
+            realTimeList.add(gson.fromJson(arraymetros.get(i), RealTimeBusesAndMetros.class));
+        }
+
+        JsonArray arraybuses = jsonObject.get("ResponseData").getAsJsonObject().get("Buses").getAsJsonArray();
+        for (int i = 0; i < arraybuses.size(); i++) {
+            realTimeList.add(gson.fromJson(arraybuses.get(i), RealTimeBusesAndMetros.class));
+        }
+        return realTimeList;
+    }
+
+    private String fetch(String urlString) {
+        String result = "";
         try {
             URL url = new URL(urlString);
             Scanner sc = new Scanner(url.openStream());
@@ -42,21 +86,6 @@ public class APIData {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Gson gson = new Gson();
-
-        JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
-        JsonArray array = jsonObject.get("ResponseData").getAsJsonArray();
-        List<SiteInfo> siteInfoList = new ArrayList<>();
-
-        for(int i = 0; i < array.size(); i++) {
-            siteInfoList.add(gson.fromJson(array.get(i) , SiteInfo.class));
-        }
-
-        return siteInfoList;
-
-
-
+        return result;
     }
-
 }
