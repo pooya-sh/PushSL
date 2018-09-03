@@ -9,3 +9,12 @@
 #secondContainer {
     background-color: blueviolet;
 }
+
+i {
+    font-family: "Font Awesome 5 Free";
+!important;
+}
+
+#resultDiv {
+    background-color: aquamarine;
+}
