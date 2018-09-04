@@ -37,7 +37,7 @@ public class PushslApplicationTests {
 
     @Test
     public void testPlannerAPI() {
-        List<Trip> list = apiData.TripInfo("9192", "9669");
+        List<Trip> list = apiData.TripInfo("9192", "9669", "2018-09-04", "17:30");
         list.forEach(System.out::println);
     }
 }
