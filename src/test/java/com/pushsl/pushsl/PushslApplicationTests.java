@@ -1,7 +1,9 @@
 package com.pushsl.pushsl;
 
+import com.pushsl.pushsl.Objects.Leg;
 import com.pushsl.pushsl.Objects.RealTimeBusesAndMetros;
 import com.pushsl.pushsl.Objects.SiteInfo;
+import com.pushsl.pushsl.Objects.Trip;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,12 @@ public class PushslApplicationTests {
     @Test
     public void testRealTimeAPI() {
         List<RealTimeBusesAndMetros> list = apiData.getRealTimeInfo("9192", "2");
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void testPlannerAPI() {
+        List<Trip> list = apiData.TripInfo("9192", "9669");
         list.forEach(System.out::println);
     }
 }
