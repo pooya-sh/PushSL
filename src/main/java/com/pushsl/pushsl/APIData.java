@@ -19,37 +19,34 @@ import java.util.List;
 import java.util.Scanner;
 
 @Component
-@SuppressWarnings("Duplicates")
 public class APIData {
-
 
     public List<SiteInfo> getSiteInfo(String searchString) {
         String format = "json";
         String key = System.getenv("SiteInfoKey");
-        boolean stationsonly = true;
-        int maxresults = 10;
+        boolean stationsOnly = true;
+        int maxResults = 10;
 
         String urlString = "http://api.sl.se/api2/typeahead." + format
                 + "?key=" + key
                 + "&searchstring=" + searchString
-                + "&stationsonly=" + stationsonly
-                + "&maxresults=" + maxresults;
+                + "&stationsonly=" + stationsOnly
+                + "&maxresults=" + maxResults;
 
         String result = fetch(urlString);
 
-        Gson gson = new Gson();
         JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
-        JsonArray array = jsonObject.get("ResponseData").getAsJsonArray();
+        JsonArray siteInfoArray = jsonObject.get("ResponseData").getAsJsonArray();
         List<SiteInfo> siteInfoList = new ArrayList<>();
 
-        for (int i = 0; i < array.size(); i++) {
-            siteInfoList.add(gson.fromJson(array.get(i), SiteInfo.class));
+        Gson gson = new Gson();
+        for (int i = 0; i < siteInfoArray.size(); i++) {
+            siteInfoList.add(gson.fromJson(siteInfoArray.get(i), SiteInfo.class));
         }
 
         return siteInfoList;
 
     }
-
 
     public List<RealTimeBusesAndMetros> getRealTimeInfo(String siteId, String timewindow) {
         String format = "json";
@@ -62,20 +59,48 @@ public class APIData {
 
         String result = fetch(urlString);
 
-        Gson gson = new Gson();
         JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
-        JsonArray arraymetros = jsonObject.get("ResponseData").getAsJsonObject().get("Metros").getAsJsonArray();
+        JsonArray metroArray = jsonObject.get("ResponseData").getAsJsonObject().get("Metros").getAsJsonArray();
         List<RealTimeBusesAndMetros> realTimeList = new ArrayList<>();
 
-        for (int i = 0; i < arraymetros.size(); i++) {
-            realTimeList.add(gson.fromJson(arraymetros.get(i), RealTimeBusesAndMetros.class));
+        Gson gson = new Gson();
+        for (int i = 0; i < metroArray.size(); i++) {
+            realTimeList.add(gson.fromJson(metroArray.get(i), RealTimeBusesAndMetros.class));
         }
 
-        JsonArray arraybuses = jsonObject.get("ResponseData").getAsJsonObject().get("Buses").getAsJsonArray();
-        for (int i = 0; i < arraybuses.size(); i++) {
-            realTimeList.add(gson.fromJson(arraybuses.get(i), RealTimeBusesAndMetros.class));
+        JsonArray busArray = jsonObject.get("ResponseData").getAsJsonObject().get("Buses").getAsJsonArray();
+        for (int i = 0; i < busArray.size(); i++) {
+            realTimeList.add(gson.fromJson(busArray.get(i), RealTimeBusesAndMetros.class));
         }
         return realTimeList;
+    }
+
+    public List<Trip> tripInfo(String originId, String destId, String date, String time) {
+        String format = "json";
+        String key = System.getenv("PlannerKey");
+        String urlString = "http://api.sl.se/api2/TravelplannerV3/trip." + format
+                + "?key=" + key
+                + "&originId=" + originId
+                + "&destId=" + destId
+                + "&date=" + date
+                + "&time=" + time;
+
+        String result = fetch(urlString);
+
+        JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
+        JsonArray tripArray = jsonObject.get("Trip").getAsJsonArray();
+        List<Trip> tripInfo = new ArrayList<>();
+
+        Gson gson = new Gson();
+        for (int i = 0; i < tripArray.size(); i++) {
+            tripInfo.add(new Trip());
+            JsonArray tripPartArray = tripArray.get(i).getAsJsonObject().get("LegList").getAsJsonObject().get("Leg").getAsJsonArray();
+            for (int j = 0; j < tripPartArray.size(); j++) {
+                JsonObject json = tripPartArray.get(j).getAsJsonObject();
+                tripInfo.get(i).legList.add(gson.fromJson(json, Leg.class));
+            }
+        }
+        return tripInfo;
     }
 
     private String fetch(String urlString) {
@@ -90,36 +115,5 @@ public class APIData {
             e.printStackTrace();
         }
         return result;
-    }
-
-
-    public List<Trip> TripInfo(String originId, String destId, String date, String time) {
-        String format = "json";
-        String key = System.getenv("PlannerKey");
-        String urlString = "http://api.sl.se/api2/TravelplannerV3/trip." + format
-                + "?key=" + key
-                + "&originId=" + originId
-                + "&destId=" + destId
-                + "&date=" + date
-                + "&time=" + time;
-
-        String result = fetch(urlString);
-
-        Gson gson = new Gson();
-        JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
-        JsonArray array = jsonObject.get("Trip").getAsJsonArray();
-        List<Trip> tripInfo = new ArrayList<>();
-        List<Leg> list = new ArrayList<>();
-
-        System.out.println(array.size());
-        for (int i = 0; i < array.size(); i++) {
-            tripInfo.add(new Trip());
-            JsonArray legArray = array.get(i).getAsJsonObject().get("LegList").getAsJsonObject().get("Leg").getAsJsonArray();
-            for (int j = 0; j < legArray.size(); j++) {
-                JsonObject json = legArray.get(j).getAsJsonObject();
-                tripInfo.get(i).legList.add(gson.fromJson(json, Leg.class));
-            }
-        }
-        return tripInfo;
     }
 }

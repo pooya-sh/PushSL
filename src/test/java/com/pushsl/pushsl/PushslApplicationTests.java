@@ -1,6 +1,5 @@
 package com.pushsl.pushsl;
 
-import com.pushsl.pushsl.Objects.Leg;
 import com.pushsl.pushsl.Objects.RealTimeBusesAndMetros;
 import com.pushsl.pushsl.Objects.SiteInfo;
 import com.pushsl.pushsl.Objects.Trip;
@@ -37,7 +36,7 @@ public class PushslApplicationTests {
 
     @Test
     public void testPlannerAPI() {
-        List<Trip> list = apiData.TripInfo("9192", "9669", "2018-09-04", "17:30");
+        List<Trip> list = apiData.tripInfo("9192", "9669", "2018-09-04", "17:30");
         list.forEach(System.out::println);
     }
 }

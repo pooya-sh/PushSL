@@ -19,7 +19,7 @@ public class WebController {
                                  @RequestParam String destId,
                                  @RequestParam String date,
                                  @RequestParam String time) {
-        return apiData.TripInfo(originId, destId, date, time);
+        return apiData.tripInfo(originId, destId, date, time);
     }
 
 }
