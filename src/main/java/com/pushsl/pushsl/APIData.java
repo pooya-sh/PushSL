@@ -93,13 +93,15 @@ public class APIData {
     }
 
 
-    public List<Trip> TripInfo(String originId, String destId) {
+    public List<Trip> TripInfo(String originId, String destId, String date, String time) {
         String format = "json";
         String key = System.getenv("PlannerKey");
         String urlString = "http://api.sl.se/api2/TravelplannerV3/trip." + format
                 + "?key=" + key
                 + "&originId=" + originId
-                + "&destId=" + destId;
+                + "&destId=" + destId
+                + "&date=" + date
+                + "&time=" + time;
 
         String result = fetch(urlString);
 
