@@ -1,0 +1,20 @@
+#formDiv {
+    background-color: chocolate;
+}
+
+#mainContainer {
+    background-color: aqua;
+}
+
+#secondContainer {
+    background-color: blueviolet;
+}
+
+i {
+    font-family: "Font Awesome 5 Free";
+!important;
+}
+
+#resultDiv {
+    background-color: aquamarine;
+}
