@@ -1,13 +1,23 @@
+html{
+    background: transparent !important;
+}
+
+#customBody {
+    background-color: black !important;
+    background: url("/img/pushsl-bgimg.jpg") no-repeat center bottom;
+    background-size: cover;
+    background-attachment: fixed;
+}
 #formDiv {
-    background-color: chocolate;
+    /*background-color: chocolate;*/
 }
 
 #mainContainer {
-    background-color: aqua;
+    /*background-color: aqua;*/
 }
 
 #secondContainer {
-    background-color: blueviolet;
+    background-color: rgba(0,59,122,0.5);
 }
 
 i {
@@ -16,5 +26,14 @@ i {
 }
 
 #resultDiv {
-    background-color: aquamarine;
+    background-color: rgba(0,0,0, 0.7);
+    border-radius: 10px;
+}
+
+#logo {
+    font-size: 2em;
+}
+
+#form-headerContainer {
+    /*background-color: rgba(66,139,202, 1);*/
 }
