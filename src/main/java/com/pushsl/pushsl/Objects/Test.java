@@ -7,7 +7,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class Test {
 
-    @GetMapping("/")
+    @GetMapping("/test")
     public ModelAndView test(){
         int[] array = new int [] {1,2,3,4};
         return  new ModelAndView("index")
