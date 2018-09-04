@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Trip {
+
+    public List<Leg> legList;
+
+    public Trip() {
+        this.legList = new ArrayList<>();
+    }
+
     @Override
     public String toString() {
         String reslut = "";
@@ -12,11 +19,5 @@ public class Trip {
         }
         return reslut;
     }
-
-    public Trip() {
-        this.legList = new ArrayList<>();
-    }
-
-    public List<Leg> legList;
 
 }
