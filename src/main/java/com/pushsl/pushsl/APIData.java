@@ -1,11 +1,14 @@
 package com.pushsl.pushsl;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.pushsl.pushsl.Objects.Leg;
 import com.pushsl.pushsl.Objects.RealTimeBusesAndMetros;
 import com.pushsl.pushsl.Objects.SiteInfo;
+import com.pushsl.pushsl.Objects.Trip;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -87,5 +90,34 @@ public class APIData {
             e.printStackTrace();
         }
         return result;
+    }
+
+
+    public List<Trip> TripInfo(String originId, String destId) {
+        String format = "json";
+        String key = System.getenv("PlannerKey");
+        String urlString = "http://api.sl.se/api2/TravelplannerV3/trip." + format
+                + "?key=" + key
+                + "&originId=" + originId
+                + "&destId=" + destId;
+
+        String result = fetch(urlString);
+
+        Gson gson = new Gson();
+        JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
+        JsonArray array = jsonObject.get("Trip").getAsJsonArray();
+        List<Trip> tripInfo = new ArrayList<>();
+        List<Leg> list = new ArrayList<>();
+
+        System.out.println(array.size());
+        for (int i = 0; i < array.size(); i++) {
+            tripInfo.add(new Trip());
+            JsonArray legArray = array.get(i).getAsJsonObject().get("LegList").getAsJsonObject().get("Leg").getAsJsonArray();
+            for (int j = 0; j < legArray.size(); j++) {
+                JsonObject json = legArray.get(j).getAsJsonObject();
+                tripInfo.get(i).legList.add(gson.fromJson(json, Leg.class));
+            }
+        }
+        return tripInfo;
     }
 }
