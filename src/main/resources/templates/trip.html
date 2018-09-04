@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<div id="resultDiv" class="m-4" th:fragment="trip">
+<div id="tripDiv" data-toggle="collapse" th:href="'#detail'+${i}" class="m-4 text-white" th:fragment="trip">
     <p>
         <span>15:16</span> <i class="fas fa-long-arrow-alt-right"></i> <span>20:45</span>
     </p>
@@ -16,7 +16,7 @@
     <p>
         <span>Kista</span> <i class="fas fa-long-arrow-alt-right"></i> <span>Slussen</span>
     </p>
-    <div th:each="i : ${array}">
+    <div th:each="j : ${array}">
         <div th:replace="/tripdetail :: detail"></div>
     </div>
 </div>
