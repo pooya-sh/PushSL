@@ -19,6 +19,10 @@ public class WebController {
                                  @RequestParam String destId,
                                  @RequestParam String date,
                                  @RequestParam String time) {
+        System.out.println("o: " + originId);
+        System.out.println("d: " + destId);
+        System.out.println("date: " + date);
+        System.out.println("time: " + time);
         return apiData.tripInfo(originId, destId, date, time);
     }
 
