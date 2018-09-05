@@ -3,11 +3,9 @@
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" th:href="'/APIstyle.css'" href="/static/APIstyle.css"/>
-    <link rel="stylesheet" th:href="'/js/EasyAutocomplete-1.3.5/easy-autocomplete.themes.css'"
-          href="/static/js/EasyAutocomplete-1.3.5/easy-autocomplete.themes.css"/>
-    <link rel="stylesheet" th:href="'/js/EasyAutocomplete-1.3.5/easy-autocomplete.css'"
-          href="/static/js/EasyAutocomplete-1.3.5/easy-autocomplete.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Bangers" rel="stylesheet">
+    <!--<link rel="stylesheet" th:href="'/APIstyle.css'" href="/static/APIstyle.css"/>-->
+    <link rel="stylesheet" th:href="'/alternativ.css'" href="/static/alternativ.css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
           integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"/>
     <meta charset="UTF-8">
@@ -44,8 +42,10 @@
                 </form>
             </div>
         </div>
-        <div id="resultDiv" class="py-2 my-3 resultDiv" th:each="i : ${array}">
-            <div th:replace="/trip :: trip"></div>
+        <div id="listContainer">
+            <div id="resultDiv" class="py-2 my-3 resultDiv" th:each="i : ${array}">
+                <div th:replace="/trip :: trip"></div>
+            </div>
         </div>
     </div>
 
@@ -59,8 +59,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
-<script src="/static/js/EasyAutocomplete-1.3.5/jquery.easy-autocomplete.js"
-        th:src="'/js/EasyAutocomplete-1.3.5/jquery.easy-autocomplete.js'"></script>
 <script src="/static/js/main.js" th:src="'/js/main.js'"></script>
 <script>
 

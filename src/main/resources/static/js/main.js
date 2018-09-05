@@ -83,6 +83,7 @@ function getDests() {
 }
 
 function searchTrip() {
+    $("#listContainer").empty();
     let origin = $("#inputOrigin").val();
     let destination = $("#inputDestination").val();
     let date = $("#date").val();
@@ -110,7 +111,6 @@ function searchTrip() {
         return response.json();
     }).then(function (data) {
         parseTrip(data);
-        // renderTrip();
     });
 }
 
@@ -120,6 +120,18 @@ function parseTrip(output) {
     for (let row in output) {
 
         let trip = output[row];
+        let travelTime = "";
+        if (trip.totalTravelTime > 59) {
+            let hours = Math.floor(trip.totalTravelTime / 60);
+            let minutes = trip.totalTravelTime % 60;
+            travelTime = hours + ' h  ' + minutes + ' min';
+        } else {
+            travelTime = trip.totalTravelTime + ' min';
+        }
+
+        let startTime = trip.startTime.substring(0, 5);
+        let endTime = trip.endTime.substring(0, 5);
+
 
         let resultDiv = document.createElement("DIV");
         resultDiv.classList.add("py-2", "my-3");
@@ -128,36 +140,38 @@ function parseTrip(output) {
         let tripDiv = document.createElement("DIV");
         tripDiv.setAttribute("data-toggle", "collapse");
         tripDiv.setAttribute("href", "#detail" + row);
-        tripDiv.innerHTML = '<p><span>'+ trip.startTime +'</span> <i class="fas fa-long-arrow-alt-right"></i> <span>'+ trip.endTime +'</span></p>' +
-                    '<p>Restid: <span>'+ trip.totalTravelTime +'</span></p>'+
-                    '<p><span>'+ trip.originName +'</span> <i class="fas fa-long-arrow-alt-right"></i> <span>'+ trip.destName +'</span></p>'
-                    ;
-        tripDiv.classList.add("m-4", "text-white");
+        tripDiv.innerHTML = '<div class="d-flex justify-content-between">' +
+            '<p class="h5"><span>' + startTime + '</span> <i class="fas fa-long-arrow-alt-right"></i> <span>' + endTime + '</span></p>' +
+            '<p>Restid: <span>' + travelTime + '</span></p>' +
+            '</div>' +
+            '<p><span>' + trip.originName + '</span> <i class="fas fa-long-arrow-alt-right"></i> <span>' + trip.destName + '</span></p>'
+            ;
+        tripDiv.classList.add("m-4");
 
         let list = trip.legList;
 
-        for(let detail in list){
+        for (let detail in list) {
             let leg = list[detail];
             let o = leg.Origin;
             let d = leg.Destination;
 
+            let startTime = o.time.substring(0, 5);
+            let endTime = d.time.substring(0, 5);
+
             let detailDiv = document.createElement("DIV");
             detailDiv.setAttribute("id", "detail" + row);
             detailDiv.classList.add("collapse");
-            detailDiv.innerHTML = '<p><span>'+ o.time +'</span> <span>'+ o.name +'</span></p>' +
-                                '<p><span>Tunnelbananas blåa linje....etc</span></p>' +
-                                '<p><span>'+ d.time +'</span> <span>'+ d.name +'</span></p>'
-                                ;
+            detailDiv.innerHTML = '<div id="detailDiv">' +
+                '<div class="dropdown-divider"></div>' +
+                '<p>&emsp;<i class="fas fa-angle-double-down"></i> <span>' + startTime + '</span> <span>' + o.name + '</span></p>' +
+                '<p>&emsp;&emsp;<span>' + leg.category + '</span></p>' +
+                '<p>&emsp;<i class="fas fa-angle-double-right"></i> <span>' + endTime + '</span> <span>' + d.name + '</span></p>' +
+                '</div>'
+                ;
             tripDiv.appendChild(detailDiv);
         }
 
         resultDiv.appendChild(tripDiv);
-        $("#secondContainer").append(resultDiv);
-        // console.log(data[row].endTime);
-        // console.log(data[row].legList);
-        // let l = data[row].legList;
-        // for(let leg in l){
-        //     console.log(l[leg].Destination);
-        // }
+        $("#listContainer").append(resultDiv);
     }
 }
