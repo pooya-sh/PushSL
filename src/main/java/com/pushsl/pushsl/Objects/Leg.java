@@ -1,8 +1,8 @@
 package com.pushsl.pushsl.Objects;
 
 public class Leg {
-    Origin Origin;
-    Destination Destination;
+    public Origin Origin;
+    public Destination Destination;
 
     @Override
     public String toString() {

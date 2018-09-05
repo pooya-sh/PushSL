@@ -102,6 +102,7 @@ public class APIData {
             }
             tripInfo.get(i).setInfo();
         }
+        System.out.println("Heeej");
         return tripInfo;
     }
 

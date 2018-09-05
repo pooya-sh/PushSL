@@ -32,12 +32,9 @@ function getNowTime() {
     return hh + ':' + MM;
 }
 
-function getOptions() {
+function getOrigins() {
     $("#originList").empty();
     let textData = $("#inputOrigin").val();
-    let obj = {
-        searchString: textData
-    }
     fetch('http://localhost:8080/siteinfo', {
         method: 'post',
         headers: {
@@ -60,6 +57,31 @@ function getOptions() {
     });
 }
 
+function getDests() {
+    $("#destList").empty();
+    let textData = $("#inputDestination").val();
+    fetch('http://localhost:8080/siteinfo', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: textData
+    }).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        console.log(data)
+        for (let key in data) {
+            let option = document.createElement("OPTION");
+            // option.setAttribute("name", data[key].SiteId);
+            option.setAttribute("value", data[key].Name);
+            option.classList.add("form-control")
+
+            $("#destList").append(option);
+            console.log(option);
+        }
+    });
+}
+
 function searchTrip() {
     let origin = $("#inputOrigin").val();
     let destination = $("#inputDestination").val();
@@ -76,7 +98,7 @@ function searchTrip() {
         time: time
     };
 
-    let str = 'originId='+ origin +'&destId='+ destination +'&date='+ date +'&time='+ time;
+    let str = 'originName='+ origin +'&destName='+ destination +'&date='+ date +'&time='+ time;
 
     fetch('http://localhost:8080/search', {
         method: 'post',
