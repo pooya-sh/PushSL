@@ -94,6 +94,7 @@ public class APIData {
         Gson gson = new Gson();
         for (int i = 0; i < tripArray.size(); i++) {
             tripInfo.add(new Trip());
+            tripInfo.get(i).duration = tripArray.get(i).getAsJsonObject().get("duration").toString();
             JsonArray tripPartArray = tripArray.get(i).getAsJsonObject().get("LegList").getAsJsonObject().get("Leg").getAsJsonArray();
             for (int j = 0; j < tripPartArray.size(); j++) {
                 JsonObject json = tripPartArray.get(j).getAsJsonObject();
