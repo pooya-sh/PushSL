@@ -99,6 +99,7 @@ public class APIData {
                 JsonObject json = tripPartArray.get(j).getAsJsonObject();
                 tripInfo.get(i).legList.add(gson.fromJson(json, Leg.class));
             }
+            tripInfo.get(i).setInfo();
         }
         return tripInfo;
     }
