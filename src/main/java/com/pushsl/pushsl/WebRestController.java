@@ -18,8 +18,6 @@ public class WebRestController {
 
     @PostMapping("/siteinfo")
     public List<SiteInfo> getSiteInfo(@RequestBody String searchString) {
-        System.out.println(searchString);
-        System.out.println(apiData.getSiteInfo(searchString).size());
         return apiData.getSiteInfo(searchString);
     }
 
@@ -30,16 +28,8 @@ public class WebRestController {
                                  @RequestParam String date,
                                  @RequestParam String time) {
 
-        System.out.println("o: "+ originName);
-        System.out.println("d: "+ destName);
-        System.out.println("date: "+ date);
-        System.out.println("time: "+ time);
-
         String originId = apiData.getSiteInfo(originName).get(0).SiteId;
         String destId = apiData.getSiteInfo(destName).get(0).SiteId;
-        System.out.println(originId);
-        System.out.println(destId);
-        apiData.tripInfo(originId, destId, date, time).forEach(System.out::println);
         return apiData.tripInfo(originId, destId, date, time);
     }
 }
