@@ -16,6 +16,9 @@ public class Trip {
     public String totalTravelTime;
     public String originName;
     public String destName;
+    public String duration;
+    public String hours;
+    public String minutes;
 
 
     public Trip() {
@@ -31,13 +34,9 @@ public class Trip {
         this.originName = legList.get(0).Origin.name;
         this.destName = legList.get(legList.size() - 1).Destination.name;
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        hours = duration.substring(duration.indexOf("P") + 1 , duration.indexOf("T"));
+        minutes = duration.substring(duration.indexOf("T") + 1 , duration.indexOf("M"));
 
-        LocalTime start = LocalTime.parse(this.startTime, formatter);
-        LocalTime end = LocalTime.parse(this.endTime, formatter);
-        Duration duration = Duration.between(start, end);
-
-        this.totalTravelTime = duration.toMinutes() + "";
     }
 
 
