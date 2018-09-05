@@ -9,8 +9,6 @@ public class Test {
 
     @GetMapping("/test")
     public ModelAndView test(){
-        int[] array = new int [] {1,2,3,4};
-        return  new ModelAndView("index")
-                .addObject("array", array);
+        return  new ModelAndView("index");
     }
 }
