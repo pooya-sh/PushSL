@@ -24,7 +24,7 @@ public class PushslApplicationTests {
 
     @Test
     public void testSiteInfoAPI() {
-        List<SiteInfo> list = apiData.getSiteInfo("kista");
+        List<SiteInfo> list = apiData.getSiteInfo("Gullmarsplan (Stockholm)".replaceAll(" ", "%20"));
         list.forEach(System.out::println);
     }
 
@@ -36,7 +36,7 @@ public class PushslApplicationTests {
 
     @Test
     public void testPlannerAPI() {
-        List<Trip> list = apiData.tripInfo("9192", "9669", "2018-09-04", "17:30");
+        List<Trip> list = apiData.tripInfo("9192", "9669", "2018-09-05", "17:30");
         list.forEach(System.out::println);
     }
 }

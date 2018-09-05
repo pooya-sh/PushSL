@@ -32,7 +32,7 @@ public class APIData {
                 + "&searchstring=" + searchString
                 + "&stationsonly=" + stationsOnly
                 + "&maxresults=" + maxResults;
-
+        urlString = urlString.replaceAll(" ", "%20");
         String result = fetch(urlString);
         System.out.println(urlString);
 
@@ -100,6 +100,7 @@ public class APIData {
                 JsonObject json = tripPartArray.get(j).getAsJsonObject();
                 tripInfo.get(i).legList.add(gson.fromJson(json, Leg.class));
             }
+            tripInfo.get(i).setInfo();
         }
         return tripInfo;
     }

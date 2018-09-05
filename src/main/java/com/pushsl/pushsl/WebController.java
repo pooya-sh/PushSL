@@ -15,14 +15,14 @@ public class WebController {
     APIData apiData;
 
     @PostMapping("/search")
-    public List<Trip> searchTrip(@RequestParam String originId,
-                                 @RequestParam String destId,
+    public List<Trip> searchTrip(@RequestParam String originName,
+                                 @RequestParam String destName,
                                  @RequestParam String date,
                                  @RequestParam String time) {
-        System.out.println("o: " + originId);
-        System.out.println("d: " + destId);
-        System.out.println("date: " + date);
-        System.out.println("time: " + time);
+
+        String originId = apiData.getSiteInfo(originName).get(0).SiteId;
+        String destId = apiData.getSiteInfo(destName).get(0).SiteId;
+
         return apiData.tripInfo(originId, destId, date, time);
     }
 
