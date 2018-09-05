@@ -15,10 +15,12 @@ public class WebController {
     APIData apiData;
 
     @PostMapping("/search")
-    public List<Trip> searchTrip(@RequestParam String originId,
-                                 @RequestParam String destId,
+    public List<Trip> searchTrip(@RequestParam String originName,
+                                 @RequestParam String destName,
                                  @RequestParam String date,
                                  @RequestParam String time) {
+        String originId = apiData.getSiteInfo(originName).get(0).SiteId;
+        String destId = apiData.getSiteInfo(destName).get(0).SiteId;
         return apiData.tripInfo(originId, destId, date, time);
     }
 
