@@ -17,6 +17,7 @@ public class WebRestController {
     @PostMapping("/siteinfo")
     public List<SiteInfo> getSiteInfo(@RequestBody String searchString) {
         System.out.println(searchString);
+        System.out.println(apiData.getSiteInfo(searchString).size());
         return apiData.getSiteInfo(searchString);
     }
 

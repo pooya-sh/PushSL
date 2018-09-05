@@ -34,6 +34,7 @@ public class APIData {
                 + "&maxresults=" + maxResults;
         urlString = urlString.replaceAll(" ", "%20");
         String result = fetch(urlString);
+        System.out.println(urlString);
 
         JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
         JsonArray siteInfoArray = jsonObject.get("ResponseData").getAsJsonArray();

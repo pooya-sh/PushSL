@@ -19,8 +19,10 @@ public class WebController {
                                  @RequestParam String destName,
                                  @RequestParam String date,
                                  @RequestParam String time) {
+
         String originId = apiData.getSiteInfo(originName).get(0).SiteId;
         String destId = apiData.getSiteInfo(destName).get(0).SiteId;
+
         return apiData.tripInfo(originId, destId, date, time);
     }
 
