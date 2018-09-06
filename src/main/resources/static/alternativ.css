@@ -8,6 +8,7 @@ html {
 /* BACKGRUND HELA SIDAN*/
 #customBody {
     background-color: rgba(1, 156, 213, 1);
+    font-family: 'Nunito', sans-serif;
     /*background-color: black !important;*/
     /*background: url("/img/pushsl-bgimg.jpg") no-repeat center bottom;*/
     /*background-size: cover;*/
@@ -23,8 +24,7 @@ html {
 /* ========= RÖR EJ ======== */
 /* ========================= */
 i {
-    font-family: "Font Awesome 5 Free";
-!important;
+    font-family: "Font Awesome 5 Free" !important;
 }
 
 /* SVARTA CONTAINERS*/
@@ -50,7 +50,7 @@ i {
     color: rgba(1, 156, 213, 1);
     margin: 0;
     padding: 0;
-    font-family: 'Bangers', cursive;
+    font-family: 'Bangers', cursive !important;
     font-size: 5em;
     left: 50%;
     top: 45%;
@@ -70,4 +70,51 @@ i {
     justify-content: center;
     height: 250px;
     width: 300px;
+}
+
+#reminderFormBg {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    /* background: url("/img/pushsl-bgimg.jpg") no-repeat center bottom; */
+    background-size: cover;
+    background-attachment: fixed;
+    position: fixed;
+    height: 100%;   
+    width: 100%;
+    z-index: 100;
+}
+
+#reminderFormDiv {
+    /* background-color: rgba(1, 156, 213, 1); */
+    background-color: rgba(255, 255, 255, 1);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 15px;
+}
+
+#reminderForm {
+    /* background-color: rgba(255, 255, 255, 1); */
+    font-size: 1.5em;
+    
+}
+
+#counter {
+    font-size: 7em;
+    /* font-family: 'Bangers', cursive; */
+    color: rgba(1, 156, 213, 1);
+    margin-bottom: 0;
+}
+
+#formDiv {
+    font-size: 1.8em;
+}
+
+#listContainer {
+    font-size: 1.5em;
+}
+
+.btn-reminder {
+    font-size: 1.8em !important;
+    z-index: 90;
 }

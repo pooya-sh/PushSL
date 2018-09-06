@@ -2,8 +2,13 @@ $(document).ready(() => {
     $("#btnSearch").click(searchTrip);
     $("#date").val(getTodayDate());
     $("#time").val(getNowTime());
+    $("#reminderCancel").click(cancelReminder);
+    $("#reminderOK").click(startReminder);
 }
 );
+
+let tripLocalArray = [];
+
 
 function getTodayDate() {
     let today = new Date();
@@ -110,6 +115,7 @@ function searchTrip() {
     }).then(function (response) {
         return response.json();
     }).then(function (data) {
+        tripLocalArray = data;
         parseTrip(data);
     });
 }
@@ -146,15 +152,18 @@ function parseTrip(output) {
         let resultDiv = document.createElement("DIV");
         resultDiv.classList.add("py-2", "my-3");
         resultDiv.setAttribute("id", "resultDiv");
+        resultDiv.setAttribute("data-toggle", "collapse");
+        resultDiv.setAttribute("href", "#detail" + row);
 
         let tripDiv = document.createElement("DIV");
-        tripDiv.setAttribute("data-toggle", "collapse");
-        tripDiv.setAttribute("href", "#detail" + row);
         tripDiv.innerHTML = '<div class="d-flex justify-content-between">' +
-            '<p class="h5"><span>' + startTime + '</span> <i class="fas fa-long-arrow-alt-right"></i> <span>' + endTime + '</span></p>' +
+            '<p><span>' + startTime + '</span> <i class="fas fa-long-arrow-alt-right"></i> <span>' + endTime + '</span></p>' +
             '<p>Restid: <span>' + travelTime + '</span></p>' +
             '</div>' +
-            '<p><span>' + trip.originName + '</span> <i class="fas fa-long-arrow-alt-right"></i> <span>' + trip.destName + '</span></p>'
+            '<div class="d-flex justify-content-between align-items-center">' +
+            '<p><span>' + trip.originName + '</span> <i class="fas fa-long-arrow-alt-right"></i> <span>' + trip.destName + '</span></p>' +
+            '<button class="btn btn-link btn-reminder reminderButton" value="' + row + '" type="button"><i class="fas fa-bell"></i></button>' +
+            '</div>'
             ;
         tripDiv.classList.add("m-4");
 
@@ -183,5 +192,30 @@ function parseTrip(output) {
 
         resultDiv.appendChild(tripDiv);
         $("#listContainer").append(resultDiv);
+        $(".reminderButton").click(() => {
+            $("#reminderFormBg").removeClass('invisible');
+            $("#reminderFormBg").addClass('visible');
+            $("#tripIndex").val(this.value);
+            console.log($("#tripIndex").val());
+            console.log(tripLocalArray[$("#tripIndex").val()]);
+        });
     }
+}
+
+function showReminderForm() {
+    $("#reminderFormBg").removeClass('invisible');
+    $("#reminderFormBg").addClass('visible');
+    $("#tripIndex").val($(this).val());
+    console.log($("#tripIndex").val());
+    console.log(tripLocalArray[$("#tripIndex").val()]);
+}
+
+function cancelReminder() {
+    $("#reminderFormBg").removeClass('visible');
+    $("#reminderFormBg").addClass('invisible');
+}
+
+function startReminder() {
+
+
 }
