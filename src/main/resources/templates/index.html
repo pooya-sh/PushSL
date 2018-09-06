@@ -1,68 +1,92 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Bangers" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:700" rel="stylesheet">
     <!--<link rel="stylesheet" th:href="'/APIstyle.css'" href="/static/APIstyle.css"/>-->
-    <link rel="stylesheet" th:href="'/alternativ.css'" href="/static/alternativ.css"/>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"/>
+    <link rel="stylesheet" th:href="'/alternativ.css'" href="/static/alternativ.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+        crossorigin="anonymous" />
     <meta charset="UTF-8">
     <title>PushSL</title>
 </head>
+
 <body id="customBody">
-<div id="mainContainer" class="container d-flex justify-content-center">
-    <div id="secondContainer" class="col-12 col-lg-8">
-        <div id="form-headerContainer">
-            <header th:replace="/header :: header">
-            </header>
-            <div id="formDiv" class="text-white">
-                <form>
+    <div id="reminderFormBg" class="invisible">
+        <div id="reminderFormDiv" class="col-12 col-lg-4">
+            <div class="justify-content-center d-flex">
+                <p id="counter">00:00</p>
+            </div>
+            <div class="justify-content-center d-flex">
+                <form id="reminderForm" class="col-12 col-lg-10 mb-5">
+                    <input id="tripIndex" type="hidden"/>
                     <div class="form-group">
-                        <label>Från:</label>
-                        <input id="inputOrigin" onkeyup="getOrigins()" class="form-control" type="text" name="from" list="originList" />
-                        <datalist id="originList"></datalist>
-                    </div>
-                    <div class="form-group">
-                        <label>Till:</label>
-                        <input id="inputDestination" onkeyup="getDests()" class="form-control" type="text" name="to" list="destList"/>
-                        <datalist id="destList"></datalist>
-                    </div>
-                    <div class="form-group">
-                        <label>När vill du åka?</label>
-                        <div class="d-flex flex-column flex-lg-row">
-                            <input id="date" class="form-control col-lg-3 m-1" type="date" name="date"/>
-                            <input id="time" class="form-control col-lg-2 m-1" type="time" name="time"/>
-                            <button id="btnSearch" class="btn col-lg-2 ml-auto" type="button">Sök</button>
+                        <div class="form-row d-flex justify-content-center align-items-end">
+                            <span class="">Påminnelse&emsp;</span>
+                            <input type="number" value="10" min="1" max="120" class="text-center form-control form-control-lg col-2" />
+                            <span class="">&emsp;min innan</span>
                         </div>
-
                     </div>
-
+                    <div class="form-inline">
+                        <button class="btn btn-link col" id="reminderCancel" type="button">Avbryt</button>
+                        <button class="btn col" id="reminderOK" type="button">OK</button>
+                    </div>
                 </form>
             </div>
         </div>
-        <div id="listContainer">
-            <div id="resultDiv" class="py-2 my-3 resultDiv" th:each="i : ${array}">
-                <div th:replace="/trip :: trip"></div>
+    </div>
+    <div id="mainContainer" class="row d-flex justify-content-center">
+        <div id="secondContainer" class="col-11 col-lg-6">
+            <div id="form-headerContainer">
+                <header th:replace="/header :: header">
+                </header>
+                <div id="formDiv" class="text-white">
+                    <form>
+                        <div class="form-group">
+                            <label>Från:</label>
+                            <input id="inputOrigin" onkeyup="getOrigins()" class="form-control form-control-lg" type="text" name="from" list="originList" />
+                            <datalist id="originList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label>Till:</label>
+                            <input id="inputDestination" onkeyup="getDests()" class="form-control form-control-lg" type="text" name="to" list="destList" />
+                            <datalist id="destList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label>När vill du åka?</label>
+                            <div class="d-flex flex-column flex-lg-row">
+                                <input id="date" class="text-center form-control col-lg-4 m-1 form-control-lg" type="date" name="date" />
+                                <input id="time" class="text-center form-control col-lg-3 m-1 form-control-lg" type="time" name="time" />
+                                <button id="btnSearch" class="btn col-lg-2 ml-auto btn-lg" type="button">Sök</button>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+            <div id="listContainer">
+                <div id="resultDiv" class="py-2 my-3 resultDiv" th:each="i : ${array}">
+                    <div th:replace="/trip :: trip"></div>
+                </div>
             </div>
         </div>
+
     </div>
-
-</div>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
         crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
-<script src="/static/js/main.js" th:src="'/js/main.js'"></script>
-<script>
+    <script src="/static/js/main.js" th:src="'/js/main.js'"></script>
+    <script>
 
 
-</script>
+    </script>
 </body>
+
 </html>
