@@ -1,39 +1,44 @@
-html{
+/* ========================= */
+/* ========= RÖR EJ ======== */
+/* ========================= */
+html {
     background: transparent !important;
 }
 
+/* BACKGRUND HELA SIDAN*/
 #customBody {
     background-color: black !important;
     background: url("/img/pushsl-bgimg.jpg") no-repeat center bottom;
     background-size: cover;
     background-attachment: fixed;
 }
-#formDiv {
-    /*background-color: chocolate;*/
-}
 
-#mainContainer {
-    /*background-color: aqua;*/
-}
-
+/* BLÅ CONTAINER */
 #secondContainer {
-    background-color: rgba(0,59,122,0.5);
+    background-color: rgba(0, 59, 122, 0.5);
 }
 
+/* ========================= */
+/* ========= RÖR EJ ======== */
+/* ========================= */
 i {
     font-family: "Font Awesome 5 Free";
 !important;
 }
 
+/* SVARTA CONTAINERS*/
 #resultDiv {
-    background-color: rgba(0,0,0,0.7);
+    background-color: rgba(0, 0, 0, 0.7);
     border-radius: 10px;
 }
 
+/* ========================= */
+/* ========= RÖR EJ ======== */
+/* ========================= */
 #logo {
     font-size: 2em;
 }
 
-#form-headerContainer {
-    /*background-color: rgba(66,139,202, 1);*/
+#detailDiv{
+    /*background-color: rgba(0, 0, 0, 0.7);*/
 }
