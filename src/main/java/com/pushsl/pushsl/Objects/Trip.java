@@ -34,8 +34,13 @@ public class Trip {
         this.originName = legList.get(0).Origin.name;
         this.destName = legList.get(legList.size() - 1).Destination.name;
 
-        hours = duration.substring(duration.indexOf("P") + 1 , duration.indexOf("T"));
-        minutes = duration.substring(duration.indexOf("T") + 1 , duration.indexOf("M"));
+        if(duration.contains("H")) {
+            hours = duration.substring(duration.indexOf("T") + 1 , duration.indexOf("H"));
+            minutes = duration.substring(duration.indexOf("H") + 1 , duration.indexOf("M"));
+        } else {
+            hours = "";
+            minutes = duration.substring(duration.indexOf("T") + 1 , duration.indexOf("M"));
+        }
 
     }
 
