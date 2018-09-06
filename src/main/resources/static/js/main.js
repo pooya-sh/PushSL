@@ -120,14 +120,24 @@ function parseTrip(output) {
     for (let row in output) {
 
         let trip = output[row];
-        let travelTime = "";
-        if (trip.totalTravelTime > 59) {
-            let hours = Math.floor(trip.totalTravelTime / 60);
-            let minutes = trip.totalTravelTime % 60;
-            travelTime = hours + ' h  ' + minutes + ' min';
+
+        let travelTime = '';
+
+        console.log('hour: ' + trip.minutes);
+
+        if (trip.hours === "") {
+            travelTime = trip.minutes + 'min';
         } else {
-            travelTime = trip.totalTravelTime + ' min';
+            travelTime = trip.hours + ' h  ' + trip.minutes + ' min';
         }
+
+        // if (trip.totalTravelTime > 59) {
+        //     let hours = Math.floor(trip.totalTravelTime / 60);
+        //     let minutes = trip.totalTravelTime % 60;
+        //     travelTime = hours + ' h  ' + minutes + ' min';
+        // } else {
+        //     travelTime = trip.totalTravelTime + ' min';
+        // }
 
         let startTime = trip.startTime.substring(0, 5);
         let endTime = trip.endTime.substring(0, 5);
