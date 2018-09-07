@@ -49,14 +49,12 @@ function getOrigins() {
     }).then(function (response) {
         return response.json();
     }).then(function (data) {
-        console.log(data)
         for (let key in data) {
             let option = document.createElement("OPTION");
             option.setAttribute("value", data[key].Name);
             option.classList.add("form-control")
 
             $("#originList").append(option);
-            console.log(option);
         }
     });
 }
@@ -73,7 +71,6 @@ function getDests() {
     }).then(function (response) {
         return response.json();
     }).then(function (data) {
-        console.log(data)
         for (let key in data) {
             let option = document.createElement("OPTION");
             option.setAttribute("value", data[key].Name);
@@ -195,7 +192,7 @@ function cancelReminder() {
 
 function startReminder() {
     let chosenTrip = tripLocalArray[$('#tripIndex').val()];
-    console.log(chosenTrip);
+    let expectedDep = chosenTrip.startTime;
     fetch('http://localhost:8080/reminder', {
         method: 'post',
         headers: {
@@ -205,10 +202,8 @@ function startReminder() {
     }).then(function (response) {
         return response.json();
     }).then(function (data) {
-        console.log(data);
         if (data) {
             setInterval(() => {
-                console.log(chosenTrip);
                 fetch('http://localhost:8080/checktime', {
                     method: 'post',
                     headers: {
@@ -218,12 +213,11 @@ function startReminder() {
                 }).then(function (response) {
                     return response.text();
                 }).then(function (data) {
-                    console.log(data);
+                    expectedDep = parseTime(data);
                 });
             }, 5000);
-            let dep = addTime(new Date(), 1);
-            setInterval(()=> {
-                updateCounter(new Date(), dep);
+            setInterval(() => {
+                updateCounter(new Date(), expectedDep);
             }, 1000);
         } else {
             console.log('Could not set reminder');
@@ -233,25 +227,28 @@ function startReminder() {
 
 }
 
-function checkTimeLeft(chosenTrip) {
-    fetch('http://localhost:8080/checktime', {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(chosenTrip)
-    }).then(function (response) {
-        return response.json();
-    }).then(function (data) {
-        console.log(data);
-    });
-}
-
 function updateCounter(now, departure) {
+    console.log('now: ' + now);
+    console.log('dep: ' + departure);
     let diff = departure - now;
     console.log('timediff ' + diff)
+    let counterMinutes = Math.floor(diff / 60000);
+    let counterSeconds = Math.floor((diff % 60000) / 1000);
+    $("#counter").text(counterMinutes + ':' + counterSeconds);
 }
 
 function addTime(date, min) {
-    return new Date(date.getTime() + min*60000);
+    return new Date(date.getTime() + min * 60000);
+}
+
+function parseTime(dateStr) {
+    let year = dateStr.substring(0, 4);
+    let month = Number(dateStr.substring(5, 7)) - 1;
+    let day = dateStr.substring(8, 10);
+    let h = dateStr.substring(11, 13);
+    let m =dateStr.substring(14, 16);
+    let s = dateStr.substring(17, 19);
+    let parsedDate = new Date(year, month, day, h, m, s);
+    console.log('parsed: ' + parsedDate);
+    return parsedDate;
 }
