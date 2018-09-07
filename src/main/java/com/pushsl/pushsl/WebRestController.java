@@ -56,6 +56,5 @@ public class WebRestController {
             System.out.println("less than 30 minutes left, fetching real time");
             return apiData.getRemainingTime(trip);
         }
-
     }
 }
