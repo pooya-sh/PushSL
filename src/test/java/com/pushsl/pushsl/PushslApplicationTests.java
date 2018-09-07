@@ -24,7 +24,7 @@ public class PushslApplicationTests {
 
     @Test
     public void testSiteInfoAPI() {
-        List<SiteInfo> list = apiData.getSiteInfo("Gullmarsplan (Stockholm)".replaceAll(" ", "%20"));
+        List<SiteInfo> list = apiData.getSiteInfo("norgegatan");
         list.forEach(System.out::println);
     }
 
