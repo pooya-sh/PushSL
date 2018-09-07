@@ -66,10 +66,23 @@ public class PushslApplicationTests {
     @Test
     public void testGetSQLData() {
         try {
-            repository.listDBdata();
+            var list = repository.listDBdata();
+            for (var l : list) {
+                System.out.println(l);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testDeleteData() {
+        try {
+            repository.deleteData("1");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
 }
+

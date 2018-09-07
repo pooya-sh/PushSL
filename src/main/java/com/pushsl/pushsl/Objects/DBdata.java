@@ -6,6 +6,16 @@ public class DBdata {
     public String timebeforeleavning;
     public String date;
 
+    @Override
+    public String toString() {
+        return "DBdata{" +
+                "mail='" + mail + '\'' +
+                ", journeynumber='" + journeynumber + '\'' +
+                ", timebeforeleavning='" + timebeforeleavning + '\'' +
+                ", date='" + date + '\'' +
+                '}';
+    }
+
     public DBdata(String mail, String journeynumber, String timebeforeleavning, String date) {
         this.mail = mail;
         this.journeynumber = journeynumber;
