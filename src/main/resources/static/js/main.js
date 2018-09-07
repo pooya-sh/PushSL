@@ -194,6 +194,18 @@ function cancelReminder() {
 }
 
 function startReminder() {
-
+    let chosenTrip = tripLocalArray[$('#tripIndex').val()];
+    console.log(chosenTrip);
+    fetch('http://localhost:8080/reminder', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(chosenTrip)
+    }).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        console.log(data);
+    });
 
 }
