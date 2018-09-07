@@ -45,11 +45,27 @@ public class Repository {
         }
     }
 
-    public void addData(String email) throws SQLException {
+    public void addData(String email, String journeyNumberRT, String TimeBeforeLeaving) throws SQLException {
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement("INSERT INTO Users WHERE UserEmail = ? ");
-            statement.setString(1, email);
-            statement.executeUpdate();
+            PreparedStatement checkUsers = conn.prepareStatement("SELECT * FROM Users WHERE UserEmail = ? ");
+            checkUsers.setString(1, email);
+            ResultSet resultset = checkUsers.executeQuery();
+            int id;
+            if (resultset.next()) {
+                id = resultset.getInt("User_ID");
+            } else {
+                PreparedStatement statement1 = conn.prepareStatement("INSERT INTO Users VALUES (?);");
+                statement1.setString(1, email);
+                statement1.executeUpdate();
+
+                PreparedStatement statement2 = conn.prepareStatement(" SELECT * FROM Users WHERE UserEmail = ?");
+                statement2.setString(1, email);
+                ResultSet resultSet = statement2.executeQuery();
+                resultSet.next();
+                id = resultSet.getInt("User_ID");
+            }
+
+            System.out.println("id: " + id);
         }
     }
 }

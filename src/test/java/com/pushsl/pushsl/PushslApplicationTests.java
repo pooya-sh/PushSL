@@ -87,7 +87,7 @@ public class PushslApplicationTests {
     @Test
     public void testAddData() {
         try {
-            repository.addData("mail@mail.com");
+            repository.addData("m2ai23545l@mail.com", "hej", "hej");
         } catch (SQLException e) {
             e.printStackTrace();
         }
