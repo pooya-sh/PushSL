@@ -19,6 +19,8 @@ public class Trip {
     public String duration;
     public String hours;
     public String minutes;
+    public String originId;
+    public String startDate;
 
 
     public Trip() {
@@ -41,6 +43,7 @@ public class Trip {
             hours = "";
             minutes = duration.substring(duration.indexOf("T") + 1 , duration.indexOf("M"));
         }
+        startDate = legList.get(0).Origin.date;
 
     }
 

@@ -1,15 +1,16 @@
 package com.pushsl.pushsl.Objects;
 
 public class RealTimeBusesAndMetros {
-    String TransportMode;
-    String GroupOfLine;
-    String DisplayTime;
-    String LineNumber;
-    String Destination;
-    String JourneyDirection;
-    String StopAreaName;
-    String TimeTableDateTime;
-    String ExpectedDateTime;
+    public String TransportMode;
+    public String GroupOfLine;
+    public String DisplayTime;
+    public String LineNumber;
+    public String Destination;
+    public String JourneyDirection;
+    public String StopAreaName;
+    public String TimeTableDateTime;
+    public String ExpectedDateTime;
+    public String JourneyNumber;
 
     @Override
     public String toString() {
@@ -23,6 +24,7 @@ public class RealTimeBusesAndMetros {
                 ", StopAreaName='" + StopAreaName + '\'' +
                 ", TimeTableDateTime='" + TimeTableDateTime + '\'' +
                 ", ExpectedDateTime='" + ExpectedDateTime + '\'' +
+                ", JourneyNumber='" + JourneyNumber + '\'' +
                 '}';
     }
 }

@@ -1,5 +1,5 @@
 $(document).ready(() => {
-    $("#btnSearch").click(searchTrip);
+    $("#btnSearch").click(sendSearchForm);
     $("#date").val(getTodayDate());
     $("#time").val(getNowTime());
     $("#reminderCancel").click(cancelReminder);
@@ -8,7 +8,8 @@ $(document).ready(() => {
 );
 
 let tripLocalArray = [];
-
+let rtCheckInterval = 0;
+let upCounterInterval = 0;
 
 function getTodayDate() {
     let today = new Date();
@@ -49,14 +50,12 @@ function getOrigins() {
     }).then(function (response) {
         return response.json();
     }).then(function (data) {
-        console.log(data)
         for (let key in data) {
             let option = document.createElement("OPTION");
             option.setAttribute("value", data[key].Name);
             option.classList.add("form-control")
 
             $("#originList").append(option);
-            console.log(option);
         }
     });
 }
@@ -73,7 +72,6 @@ function getDests() {
     }).then(function (response) {
         return response.json();
     }).then(function (data) {
-        console.log(data)
         for (let key in data) {
             let option = document.createElement("OPTION");
             option.setAttribute("value", data[key].Name);
@@ -112,6 +110,25 @@ function searchTrip() {
         tripLocalArray = data;
         parseTrip(data);
     });
+}
+
+function validateSearchForm() {
+    if ($("#inputOrigin").val() === "" ||
+        $("#inputDestination").val() === "" ||
+        $("#date").val() === "" ||
+        $("#time").val() === "") {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function sendSearchForm() {
+    if (validateSearchForm()) {
+        searchTrip();
+    } else {
+        console.log('Form not valid');
+    }
 }
 
 
@@ -167,7 +184,7 @@ function parseTrip(output) {
             detailDiv.innerHTML = '<div id="detailDiv">' +
                 '<div class="dropdown-divider"></div>' +
                 '<p>&emsp;<i class="fas fa-angle-double-down"></i> <span>' + startTime + '</span> <span>' + o.name + '</span></p>' +
-                '<p>&emsp;&emsp;<span>' + leg.category + '</span></p>' +
+                '<p>&emsp;&emsp;<span>' + leg.name + '</span> mot <span>' + leg.direction + '</span></p>' +
                 '<p>&emsp;<i class="fas fa-angle-double-right"></i> <span>' + endTime + '</span> <span>' + d.name + '</span></p>' +
                 '</div>'
                 ;
@@ -189,11 +206,89 @@ function showReminderForm() {
 }
 
 function cancelReminder() {
+    clearInterval(rtCheckInterval);
+    clearInterval(upCounterInterval);
     $("#reminderFormBg").removeClass('visible');
     $("#reminderFormBg").addClass('invisible');
+    $("#counter").text('00:00');
+
 }
 
 function startReminder() {
+    let chosenTrip = tripLocalArray[$('#tripIndex').val()];
+    let expectedDep = parsedTimeTableTime(chosenTrip.startTime);
+    fetch('http://localhost:8080/reminder', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(chosenTrip)
+    }).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        if (data) {
+            rtCheckInterval = setInterval(() => {
+                fetch('http://localhost:8080/checktime', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(chosenTrip)
+                }).then(function (response) {
+                    return response.text();
+                }).then(function (data) {
+                    expectedDep = parseTime(data);
+                });
+            }, 5000);
+            upCounterInterval = setInterval(() => {
+                updateCounter(new Date(), expectedDep);
+            }, 1000);
+        } else {
+            console.log('Could not set reminder');
+        }
 
+    });
+
+}
+
+function updateCounter(now, departure) {
+    console.log('cnow: ' + now);
+    console.log('cdep: ' + departure);
+    let diff = departure - now;
+    console.log('timediff ' + diff)
+    let counterMinutes = Math.floor(diff / 60000);
+    let counterSeconds = Math.floor((diff % 60000) / 1000);
+    if (counterSeconds < 10) {
+        counterSeconds = '0' + counterSeconds;
+    }
+    if (counterMinutes < 10) {
+        counterMinutes = '0' + counterMinutes;
+    }
+    $("#counter").text(counterMinutes + ':' + counterSeconds);
+}
+
+function addTime(date, min) {
+    return new Date(date.getTime() + min * 60000);
+}
+
+function parseTime(dateStr) {
+    let year = dateStr.substring(0, 4);
+    let month = Number(dateStr.substring(5, 7)) - 1;
+    let day = dateStr.substring(8, 10);
+    let h = dateStr.substring(11, 13);
+    let m = dateStr.substring(14, 16);
+    let s = dateStr.substring(17, 19);
+    let parsedDate = new Date(year, month, day, h, m, s);
+    console.log('parsed: ' + parsedDate);
+    return parsedDate;
+}
+
+function parsedTimeTableTime(timeTableTime) {
+    let h = timeTableTime.substring(0, 2);
+    let m = timeTableTime.substring(3, 5);
+    let s = timeTableTime.substring(6);
+    let timeTableDate = new Date();
+    timeTableDate.setHours(h, m, s);
+    return timeTableDate;
 
 }
