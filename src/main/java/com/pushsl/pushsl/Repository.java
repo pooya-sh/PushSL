@@ -35,14 +35,20 @@ public class Repository {
         } catch (SQLException e) {
             throw new SQLException(e);
         }
-
-
     }
 
     public void deleteData(String journeyNumber) throws SQLException {
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement statement = conn.prepareStatement("DELETE FROM Travels WHERE JourneyNumberRT = ? ");
             statement.setString(1, journeyNumber);
+            statement.executeUpdate();
+        }
+    }
+
+    public void addData(String email) throws SQLException {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement statement = conn.prepareStatement("INSERT INTO Users WHERE UserEmail = ? ");
+            statement.setString(1, email);
             statement.executeUpdate();
         }
     }
