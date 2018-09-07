@@ -40,6 +40,8 @@ public class WebRestController {
 
     @PostMapping("/checktime")
     public String checkRealTime(@RequestBody Trip trip) {
-        return apiData.getRemainingTime(trip);
+        String s = apiData.getRemainingTime(trip);
+        System.out.println(s);
+        return s;
     }
 }
