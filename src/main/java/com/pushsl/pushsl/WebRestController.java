@@ -58,6 +58,5 @@ public class WebRestController {
             System.out.println(s);
             return s;
         }
-
     }
 }
