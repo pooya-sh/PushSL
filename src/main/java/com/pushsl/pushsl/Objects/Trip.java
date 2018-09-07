@@ -19,6 +19,7 @@ public class Trip {
     public String duration;
     public String hours;
     public String minutes;
+    public String originId;
 
 
     public Trip() {
