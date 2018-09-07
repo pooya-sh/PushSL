@@ -52,7 +52,6 @@ function getOrigins() {
         console.log(data)
         for (let key in data) {
             let option = document.createElement("OPTION");
-            // option.setAttribute("name", data[key].SiteId);
             option.setAttribute("value", data[key].Name);
             option.classList.add("form-control")
 
@@ -77,12 +76,10 @@ function getDests() {
         console.log(data)
         for (let key in data) {
             let option = document.createElement("OPTION");
-            // option.setAttribute("name", data[key].SiteId);
             option.setAttribute("value", data[key].Name);
             option.classList.add("form-control")
 
             $("#destList").append(option);
-            console.log(option);
         }
     });
 }
@@ -93,9 +90,6 @@ function searchTrip() {
     let destination = $("#inputDestination").val();
     let date = $("#date").val();
     let time = $("#time").val();
-
-    console.log(date);
-    console.log(new Date());
 
     let obj = {
         originId: origin,
@@ -129,21 +123,11 @@ function parseTrip(output) {
 
         let travelTime = '';
 
-        console.log('hour: ' + trip.minutes);
-
         if (trip.hours === "") {
             travelTime = trip.minutes + 'min';
         } else {
             travelTime = trip.hours + ' h  ' + trip.minutes + ' min';
         }
-
-        // if (trip.totalTravelTime > 59) {
-        //     let hours = Math.floor(trip.totalTravelTime / 60);
-        //     let minutes = trip.totalTravelTime % 60;
-        //     travelTime = hours + ' h  ' + minutes + ' min';
-        // } else {
-        //     travelTime = trip.totalTravelTime + ' min';
-        // }
 
         let startTime = trip.startTime.substring(0, 5);
         let endTime = trip.endTime.substring(0, 5);
@@ -162,7 +146,7 @@ function parseTrip(output) {
             '</div>' +
             '<div class="d-flex justify-content-between align-items-center">' +
             '<p><span>' + trip.originName + '</span> <i class="fas fa-long-arrow-alt-right"></i> <span>' + trip.destName + '</span></p>' +
-            '<button class="btn btn-link btn-reminder reminderButton" value="' + row + '" type="button"><i class="fas fa-bell"></i></button>' +
+            '<button class="btn btn-link btn-reminder reminderButton" value="' + row + '" type="button" id="reminderBtn' + row + '"><i class="fas fa-bell"></i></button>' +
             '</div>'
             ;
         tripDiv.classList.add("m-4");
@@ -192,13 +176,7 @@ function parseTrip(output) {
 
         resultDiv.appendChild(tripDiv);
         $("#listContainer").append(resultDiv);
-        $(".reminderButton").click(() => {
-            $("#reminderFormBg").removeClass('invisible');
-            $("#reminderFormBg").addClass('visible');
-            $("#tripIndex").val(this.value);
-            console.log($("#tripIndex").val());
-            console.log(tripLocalArray[$("#tripIndex").val()]);
-        });
+        $("#reminderBtn" + row).click(showReminderForm);
     }
 }
 
