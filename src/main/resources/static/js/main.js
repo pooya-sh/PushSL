@@ -206,6 +206,51 @@ function startReminder() {
         return response.json();
     }).then(function (data) {
         console.log(data);
+        if (data) {
+            setInterval((chosenTrip) => {
+                fetch('http://localhost:8080/checktime', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(chosenTrip)
+                }).then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    console.log(data);
+                });
+            }, 30000);
+            let dep = addTime(new Date(), 1);
+            setInterval(()=> {
+                updateCounter(new Date(), dep);
+            }, 1000);
+        } else {
+            console.log('Could not set reminder');
+        }
+
     });
 
+}
+
+function checkTimeLeft(chosenTrip) {
+    fetch('http://localhost:8080/checktime', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(chosenTrip)
+    }).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        console.log(data);
+    });
+}
+
+function updateCounter(now, departure) {
+    let diff = departure - now;
+    console.log('timediff ' + diff)
+}
+
+function addTime(date, min) {
+    return new Date(date.getTime() + min*60000);
 }
