@@ -23,6 +23,9 @@ public class PushslApplicationTests {
     @Autowired
     DataSource dataSource;
 
+    @Autowired
+    Repository repository;
+
     @Test
     public void contextLoads() {
     }
@@ -50,13 +53,21 @@ public class PushslApplicationTests {
     public void testSQLConnection() {
         String urlkey = System.getenv("url");
         try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             System.out.println("Trying to connect");
             Connection connection = DriverManager.getConnection(urlkey);
             System.out.println("Connection");
 
         } catch (Exception e) {
             System.out.println("Unable to make connection with DB");
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testGetSQLData() {
+        try {
+            repository.listDBdata();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
