@@ -109,7 +109,7 @@ public class APIData {
 
     public String getRemainingTime(Trip trip) {
 
-        List<RealTimeBusesAndMetros> realTimeList = getRealTimeInfo(trip.originId, "10");
+        List<RealTimeBusesAndMetros> realTimeList = getRealTimeInfo(trip.originId, "30");
 
         for(RealTimeBusesAndMetros rt : realTimeList) {
             if(rt.JourneyNumber.equals(trip.legList.get(0).number)) {
