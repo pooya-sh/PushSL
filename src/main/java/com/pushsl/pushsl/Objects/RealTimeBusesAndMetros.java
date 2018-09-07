@@ -10,6 +10,7 @@ public class RealTimeBusesAndMetros {
     String StopAreaName;
     String TimeTableDateTime;
     String ExpectedDateTime;
+    String JourneyNumber;
 
     @Override
     public String toString() {
@@ -23,6 +24,7 @@ public class RealTimeBusesAndMetros {
                 ", StopAreaName='" + StopAreaName + '\'' +
                 ", TimeTableDateTime='" + TimeTableDateTime + '\'' +
                 ", ExpectedDateTime='" + ExpectedDateTime + '\'' +
+                ", JourneyNumber='" + JourneyNumber + '\'' +
                 '}';
     }
 }
