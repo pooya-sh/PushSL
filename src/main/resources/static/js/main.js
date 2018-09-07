@@ -207,7 +207,8 @@ function startReminder() {
     }).then(function (data) {
         console.log(data);
         if (data) {
-            setInterval((chosenTrip) => {
+            setInterval(() => {
+                console.log(chosenTrip);
                 fetch('http://localhost:8080/checktime', {
                     method: 'post',
                     headers: {
@@ -215,11 +216,11 @@ function startReminder() {
                     },
                     body: JSON.stringify(chosenTrip)
                 }).then(function (response) {
-                    return response.json();
+                    return response.text();
                 }).then(function (data) {
                     console.log(data);
                 });
-            }, 30000);
+            }, 5000);
             let dep = addTime(new Date(), 1);
             setInterval(()=> {
                 updateCounter(new Date(), dep);
