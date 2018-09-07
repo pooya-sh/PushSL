@@ -37,4 +37,9 @@ public class WebRestController {
         else
             return false;
     }
+
+    @PostMapping("/checktime")
+    public String checkRealTime(@RequestBody Trip trip) {
+        return apiData.getRemainingTime(trip);
+    }
 }

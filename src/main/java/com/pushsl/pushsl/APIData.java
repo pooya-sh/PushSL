@@ -94,6 +94,7 @@ public class APIData {
         Gson gson = new Gson();
         for (int i = 0; i < tripArray.size(); i++) {
             tripInfo.add(new Trip());
+            tripInfo.get(i).originId = originId;
             tripInfo.get(i).duration = tripArray.get(i).getAsJsonObject().get("duration").toString();
             JsonArray tripPartArray = tripArray.get(i).getAsJsonObject().get("LegList").getAsJsonObject().get("Leg").getAsJsonArray();
             for (int j = 0; j < tripPartArray.size(); j++) {
@@ -104,6 +105,18 @@ public class APIData {
         }
         System.out.println("Heeej");
         return tripInfo;
+    }
+
+    public String getRemainingTime(Trip trip) {
+
+        List<RealTimeBusesAndMetros> realTimeList = getRealTimeInfo(trip.originId, "10");
+
+        for(RealTimeBusesAndMetros rt : realTimeList) {
+            if(rt.JourneyNumber.equals(trip.legList.get(0).number)) {
+                return rt.ExpectedDateTime;
+            }
+        }
+        return null;
     }
 
     private String fetch(String urlString) {
