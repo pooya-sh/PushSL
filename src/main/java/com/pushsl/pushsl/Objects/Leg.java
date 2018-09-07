@@ -5,6 +5,8 @@ public class Leg {
     public Destination Destination;
     public String category;
     public String number;
+    public String name;
+    public String direction;
 
     @Override
     public String toString() {
@@ -13,6 +15,8 @@ public class Leg {
                 ", Destination=" + Destination +
                 ", category='" + category + '\'' +
                 ", number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", direction='" + direction + '\'' +
                 '}';
     }
 }
