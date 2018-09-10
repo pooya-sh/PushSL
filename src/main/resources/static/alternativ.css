@@ -66,6 +66,7 @@ i {
     justify-content: center;
     height: 250px;
     width: 300px;
+    cursor: pointer;
 }
 
 #reminderFormBg {
@@ -125,4 +126,29 @@ i {
 
 #counterInfo {
     position: absolute;
+}
+
+.btnHover:hover {
+    background-color: rgba(150,150,150,1);
+}
+
+
+#searchProgressBg {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    background-size: cover;
+    background-attachment: fixed;
+    position: fixed;
+    height: 100%;   
+    width: 100%;
+    z-index: 100;
+}
+
+#progressWrapper {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: 15px;
+    margin: 0;
+    padding: 0;
 }

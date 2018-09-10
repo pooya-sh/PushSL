@@ -5,6 +5,9 @@ $(document).ready(() => {
     $("#reminderCancel").click(cancelReminder);
     $("#reminderOK").click(startReminder);
     $("#btnOpenEmailForm").click(openEmailForm);
+    $("#logoDiv").click(() => {
+        document.location.href = "/test";
+    });
 }
 );
 
@@ -84,6 +87,9 @@ function getDests() {
 }
 
 function searchTrip() {
+    $("#searchProgressBg").removeClass('invisible');
+    $("#searchProgressBg").addClass('visible');
+    $("#searchProgressBar").attr('aria-valuenow', '10%').css('width', '10%');
     $("#listContainer").empty();
     let origin = $("#inputOrigin").val();
     let destination = $("#inputDestination").val();
@@ -99,6 +105,8 @@ function searchTrip() {
 
     let str = 'originName=' + origin + '&destName=' + destination + '&date=' + date + '&time=' + time;
 
+    $("#searchProgressBar").attr('aria-valuenow', '98%').css('width', '98%');
+
     fetch('http://localhost:8080/search', {
         method: 'post',
         headers: {
@@ -108,9 +116,12 @@ function searchTrip() {
     }).then(function (response) {
         return response.json();
     }).then(function (data) {
+        $("#searchProgressBar").attr('aria-valuenow', '100%').css('width', '100%');
         tripLocalArray = data;
         parseTrip(data);
     });
+
+
 }
 
 function validateSearchForm() {
@@ -164,7 +175,7 @@ function parseTrip(output) {
             '</div>' +
             '<div class="d-flex justify-content-between align-items-center">' +
             '<p><span>' + trip.originName + '</span> <i class="fas fa-long-arrow-alt-right"></i> <span>' + trip.destName + '</span></p>' +
-            '<button class="btn btn-link btn-reminder reminderButton" value="' + row + '" type="button" id="reminderBtn' + row + '"><i class="fas fa-bell"></i></button>' +
+            '<button class="btn btn-reminder btn-link reminderButton" value="' + row + '" type="button" id="reminderBtn' + row + '"><i class="fas fa-bell"></i></button>' +
             '</div>'
             ;
         tripDiv.classList.add("m-4");
@@ -179,13 +190,24 @@ function parseTrip(output) {
             let startTime = o.time.substring(0, 5);
             let endTime = d.time.substring(0, 5);
 
+            console.log(leg.name);
+
+
+            let legIcon = '';
+            if (leg.name === 'TUNNELBANA  13') {
+                legIcon = '<i class="fas fa-subway text-danger"></i>';
+            }
+
+
+            console.log(legIcon);
+
             let detailDiv = document.createElement("DIV");
             detailDiv.setAttribute("id", "detail" + row);
             detailDiv.classList.add("collapse");
             detailDiv.innerHTML = '<div id="detailDiv">' +
                 '<div class="dropdown-divider"></div>' +
                 '<p>&emsp;<i class="fas fa-angle-double-down"></i> <span>' + startTime + '</span> <span>' + o.name + '</span></p>' +
-                '<p>&emsp;&emsp;<span>' + leg.name + '</span> mot <span>' + leg.direction + '</span></p>' +
+                '<p>&emsp;&emsp;' + legIcon + '&emsp;<span>' + leg.name + '</span> mot <span>' + leg.direction + '</span></p>' +
                 '<p>&emsp;<i class="fas fa-angle-double-right"></i> <span>' + endTime + '</span> <span>' + d.name + '</span></p>' +
                 '</div>'
                 ;
@@ -195,6 +217,9 @@ function parseTrip(output) {
         resultDiv.appendChild(tripDiv);
         $("#listContainer").append(resultDiv);
         $("#reminderBtn" + row).click(showReminderForm);
+        $("#searchProgressBar").attr('aria-valuenow', '0%').css('width', '0%');
+        $("#searchProgressBg").removeClass('visible');
+        $("#searchProgressBg").addClass('invisible');
     }
 }
 
@@ -234,7 +259,6 @@ function cancelReminder() {
     $("#reminderFormBg").removeClass('visible');
     $("#reminderFormBg").addClass('invisible');
     $("#counter").text('00:00');
-    $("#counterInfo").addClass('myInvisible');
     $("#btnOpenEmailForm").prop('disabled', false);
 
 }
@@ -272,10 +296,10 @@ function updateCounter(now, departure) {
     console.log('timediff ' + diff)
     if (diff < 0) {
         $("#counter").text('00:00');
-        $("#counterInfo").removeClass('myInvisible');
+        $("#counterInfo").text('Avgångstiden har passerat');
         $("#btnOpenEmailForm").prop('disabled', true);
     } else {
-        $("#counterInfo").addClass('myInvisible');
+        $("#counterInfo").text('Avgång om');
         $("#btnOpenEmailForm").prop('disabled', false);
         let counterMinutes = Math.floor(diff / 60000);
         let counterSeconds = Math.floor((diff % 60000) / 1000);
