@@ -122,3 +122,7 @@ i {
 .myInvisible {
     display: none;
 }
+
+#counterInfo {
+    position: absolute;
+}

@@ -27,7 +27,7 @@ function getTodayDate() {
 }
 
 function getNowTime() {
-    let today = new Date();
+    let today = addTime(new Date(), 5);
     let hh = today.getHours();
     if (hh < 10) {
         hh = '0' + hh;
@@ -202,8 +202,25 @@ function showReminderForm() {
     $("#reminderFormBg").removeClass('invisible');
     $("#reminderFormBg").addClass('visible');
     $("#tripIndex").val($(this).val());
-    console.log($("#tripIndex").val());
-    console.log(tripLocalArray[$("#tripIndex").val()]);
+
+    let chosenTrip = tripLocalArray[$('#tripIndex').val()];
+    let expectedDep = parsedTimeTableTime(chosenTrip.startTime);
+    rtCheckInterval = setInterval(() => {
+        fetch('http://localhost:8080/checktime', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(chosenTrip)
+        }).then(function (response) {
+            return response.text();
+        }).then(function (data) {
+            expectedDep = parseTime(data);
+        });
+    }, 5000);
+    upCounterInterval = setInterval(() => {
+        updateCounter(new Date(), expectedDep);
+    }, 1000);
 }
 
 function cancelReminder() {
@@ -217,6 +234,8 @@ function cancelReminder() {
     $("#reminderFormBg").removeClass('visible');
     $("#reminderFormBg").addClass('invisible');
     $("#counter").text('00:00');
+    $("#counterInfo").addClass('myInvisible');
+    $("#btnOpenEmailForm").prop('disabled', false);
 
 }
 
@@ -226,7 +245,7 @@ function startReminder() {
     let reminderMinutes = $("#inputReminderMinutes").val();
     chosenTrip.email = email;
     chosenTrip.reminderMinutes = reminderMinutes;
-    let expectedDep = parsedTimeTableTime(chosenTrip.startTime);
+    // let expectedDep = parsedTimeTableTime(chosenTrip.startTime);
     fetch('http://localhost:8080/reminder', {
         method: 'post',
         headers: {
@@ -237,22 +256,7 @@ function startReminder() {
         return response.json();
     }).then(function (data) {
         if (data) {
-            rtCheckInterval = setInterval(() => {
-                fetch('http://localhost:8080/checktime', {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(chosenTrip)
-                }).then(function (response) {
-                    return response.text();
-                }).then(function (data) {
-                    expectedDep = parseTime(data);
-                });
-            }, 5000);
-            upCounterInterval = setInterval(() => {
-                updateCounter(new Date(), expectedDep);
-            }, 1000);
+            console.log('Reminder set');
         } else {
             console.log('Could not set reminder');
         }
@@ -266,15 +270,23 @@ function updateCounter(now, departure) {
     console.log('cdep: ' + departure);
     let diff = departure - now;
     console.log('timediff ' + diff)
-    let counterMinutes = Math.floor(diff / 60000);
-    let counterSeconds = Math.floor((diff % 60000) / 1000);
-    if (counterSeconds < 10) {
-        counterSeconds = '0' + counterSeconds;
+    if (diff < 0) {
+        $("#counter").text('00:00');
+        $("#counterInfo").removeClass('myInvisible');
+        $("#btnOpenEmailForm").prop('disabled', true);
+    } else {
+        $("#counterInfo").addClass('myInvisible');
+        $("#btnOpenEmailForm").prop('disabled', false);
+        let counterMinutes = Math.floor(diff / 60000);
+        let counterSeconds = Math.floor((diff % 60000) / 1000);
+        if (counterSeconds < 10) {
+            counterSeconds = '0' + counterSeconds;
+        }
+        if (counterMinutes < 10) {
+            counterMinutes = '0' + counterMinutes;
+        }
+        $("#counter").text(counterMinutes + ':' + counterSeconds);
     }
-    if (counterMinutes < 10) {
-        counterMinutes = '0' + counterMinutes;
-    }
-    $("#counter").text(counterMinutes + ':' + counterSeconds);
 }
 
 function addTime(date, min) {
@@ -303,7 +315,7 @@ function parsedTimeTableTime(timeTableTime) {
 
 }
 
-function openEmailForm(){
+function openEmailForm() {
     $("#btnOpenEmailForm").addClass("myInvisible");
     $("#emailForm").removeClass("myInvisible");
     $("#reminderOK").removeClass("myInvisible");
