@@ -216,6 +216,10 @@ function cancelReminder() {
 
 function startReminder() {
     let chosenTrip = tripLocalArray[$('#tripIndex').val()];
+    let email = $("#inputReminderEmail").val();
+    let reminderMinutes = $("#inputReminderEmail").val();
+    chosenTrip.email = email;
+    chosenTrip.reminderMinutes = reminderMinutes;
     let expectedDep = parsedTimeTableTime(chosenTrip.startTime);
     fetch('http://localhost:8080/reminder', {
         method: 'post',

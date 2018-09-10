@@ -21,6 +21,8 @@ public class Trip {
     public String minutes;
     public String originId;
     public String startDate;
+    public String email;
+    public String reminderMinutes;
 
 
     public Trip() {
