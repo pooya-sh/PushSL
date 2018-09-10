@@ -4,6 +4,7 @@ $(document).ready(() => {
     $("#time").val(getNowTime());
     $("#reminderCancel").click(cancelReminder);
     $("#reminderOK").click(startReminder);
+    $("#btnOpenEmailForm").click(openEmailForm);
 }
 );
 
@@ -208,6 +209,11 @@ function showReminderForm() {
 function cancelReminder() {
     clearInterval(rtCheckInterval);
     clearInterval(upCounterInterval);
+
+    $("#btnOpenEmailForm").removeClass("myInvisible");
+    $("#emailForm").addClass("myInvisible");
+    $("#reminderOK").addClass("myInvisible");
+
     $("#reminderFormBg").removeClass('visible');
     $("#reminderFormBg").addClass('invisible');
     $("#counter").text('00:00');
@@ -295,4 +301,10 @@ function parsedTimeTableTime(timeTableTime) {
     timeTableDate.setHours(h, m, s);
     return timeTableDate;
 
+}
+
+function openEmailForm(){
+    $("#btnOpenEmailForm").addClass("myInvisible");
+    $("#emailForm").removeClass("myInvisible");
+    $("#reminderOK").removeClass("myInvisible");
 }

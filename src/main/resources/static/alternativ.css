@@ -91,8 +91,12 @@ i {
 
 #reminderForm {
     /* background-color: rgba(255, 255, 255, 1); */
-    font-size: 1.5em;
+    font-size: 1.2em;
     -webkit-appearance: none;
+}
+
+#reminderCancel {
+    position: absolute;
 }
 
 #counter {
@@ -113,4 +117,8 @@ i {
 .btn-reminder {
     font-size: 1.8em !important;
     z-index: 90;
+}
+
+.myInvisible {
+    display: none;
 }

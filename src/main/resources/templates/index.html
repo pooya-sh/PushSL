@@ -18,6 +18,9 @@
 <body id="customBody">
     <div id="reminderFormBg" class="invisible">
         <div id="reminderFormDiv" class="col-12 col-lg-4">
+            <div class="d-flex justify-content-end mt-2">
+                <button class="btn btn-danger" id="reminderCancel" type="button"><i class="fas fa-times text-white"></i></button>
+            </div>
             <div class="justify-content-center d-flex">
                 <p id="counter">00:00</p>
             </div>
@@ -25,27 +28,22 @@
                 <form id="reminderForm" class="col-12 col-lg-10 mb-5">
                     <input id="tripIndex" type="hidden" />
                     <div class="form-group">
-                        <!-- <div class="form-row d-flex justify-content-center align-items-end">
-                            <span class="">Påminnelse&emsp;</span>
-                            <input type="number" value="10" min="1" max="120" class="text-center form-control form-control-lg col-2" />
-                            <span class="">&emsp;min innan</span>
-                        </div> -->
-                        <div class="form-group">
+                        <div id="emailForm" class="form-group myInvisible">
                             <div class="form-inline d-flex justify-content-center">
-                                <span>Mailpåminnelse&emsp;</span>
-                                <input id="inputReminderMinutes" type="number" value="10" min="1" max="120" class="text-center form-control form-control-lg col-2"
-                                />
+                                <span>Påminnelse&emsp;</span>
+                                <input id="inputReminderMinutes" type="number" value="10" min="1" max="120" class="text-center form-control col-2" />
                                 <span>&emsp;minuter</span>
                             </div>
                             <div class="form-group">
-                                <label class="col text-center">innan avgång till:</label>
+                                <label class="col text-center">innan avgång</label>
                                 <input id="inputReminderEmail" type="email" class="form-control form-control-lg" placeholder="mail@exempel.com" />
                             </div>
-                            <button class="btn col" id="reminderOK" type="button">OK</button>
                         </div>
-                    </div>
-                    <div class="form-inline">
-                        <button class="btn btn-link col" id="reminderCancel" type="button">Avbryt</button>
+                        <div class="form-group">
+                            <button class="btn col myInvisible" id="reminderOK" type="button">Påminn mig!</button>
+                            <button class="btn col" id="btnOpenEmailForm" type="button">Påminnelse</button>
+                        </div>
+
                     </div>
                 </form>
             </div>
