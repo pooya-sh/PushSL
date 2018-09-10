@@ -5,6 +5,7 @@ import com.pushsl.pushsl.Objects.Trip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,6 +17,9 @@ public class WebRestController {
 
     @Autowired
     APIData apiData;
+
+    @Autowired
+    Repository repository;
 
     @PostMapping("/siteinfo")
     public List<SiteInfo> getSiteInfo(@RequestBody String searchString) {
@@ -36,10 +40,19 @@ public class WebRestController {
 
     @PostMapping("/reminder")
     public boolean addReminder(@RequestBody Trip trip) {
-        if(trip != null)
+        if(trip != null) {
+            try {
+                System.out.println("TRIP NUMBER: `:::" + trip.legList.get(0).number);
+                repository.addData(trip.email, trip.legList.get(0).number, trip.reminderMinutes, apiData.getSiteInfo(trip.legList.get(0).Origin.name).get(0).SiteId);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
             return true;
-        else
+        }
+        else {
             return false;
+        }
     }
 
     @PostMapping("/checktime")

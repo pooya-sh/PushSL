@@ -71,6 +71,11 @@ public class Repository {
             addTravelStatemnet.setString(3, "1956-03-11");
             addTravelStatemnet.setInt(4, id);
             addTravelStatemnet.setString(5, siteId);
+            System.out.println("number" + journeyNumberRT);
+            System.out.println("timebeforeleaving: " + timeBeforeLeaving);
+            System.out.println("id: " + id);
+            System.out.println("siteID: " + siteId);
+            System.out.println(addTravelStatemnet.toString());
             addTravelStatemnet.executeUpdate();
 
             System.out.println("id: " + id);
