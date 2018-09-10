@@ -45,7 +45,7 @@ public class Repository {
         }
     }
 
-    public void addData(String email, String journeyNumberRT, String TimeBeforeLeaving) throws SQLException {
+    public void addData(String email, String journeyNumberRT, String timeBeforeLeaving) throws SQLException {
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement checkUsers = conn.prepareStatement("SELECT * FROM Users WHERE UserEmail = ? ");
             checkUsers.setString(1, email);
@@ -64,6 +64,13 @@ public class Repository {
                 resultSet.next();
                 id = resultSet.getInt("User_ID");
             }
+
+            PreparedStatement addTravelStatemnet = conn.prepareStatement("INSERT INTO Travels VALUES (?,?,?,?)");
+            addTravelStatemnet.setInt(1, Integer.parseInt(journeyNumberRT));
+            addTravelStatemnet.setString(2, timeBeforeLeaving);
+            addTravelStatemnet.setString(3, "1956-03-11");
+            addTravelStatemnet.setInt(4, id);
+            addTravelStatemnet.executeUpdate();
 
             System.out.println("id: " + id);
         }
