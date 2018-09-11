@@ -3,7 +3,7 @@ package com.pushsl.pushsl.Objects;
 public class DBdata {
     public String mail;
     public String journeynumber;
-    public String timebeforeleavning;
+    public String timebeforeleaving;
     public String date;
 
     @Override
@@ -11,15 +11,15 @@ public class DBdata {
         return "DBdata{" +
                 "mail='" + mail + '\'' +
                 ", journeynumber='" + journeynumber + '\'' +
-                ", timebeforeleavning='" + timebeforeleavning + '\'' +
+                ", timebeforeleavning='" + timebeforeleaving + '\'' +
                 ", date='" + date + '\'' +
                 '}';
     }
 
-    public DBdata(String mail, String journeynumber, String timebeforeleavning, String date) {
+    public DBdata(String mail, String journeynumber, String timebeforeleaving, String date) {
         this.mail = mail;
         this.journeynumber = journeynumber;
-        this.timebeforeleavning = timebeforeleavning;
+        this.timebeforeleaving = timebeforeleaving;
         this.date = date;
     }
 }
