@@ -3,8 +3,11 @@ package com.pushsl.pushsl;
 import com.pushsl.pushsl.Objects.SiteInfo;
 import com.pushsl.pushsl.Objects.Trip;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.swing.text.View;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -20,6 +23,7 @@ public class WebRestController {
 
     @Autowired
     Repository repository;
+
 
     @PostMapping("/siteinfo")
     public List<SiteInfo> getSiteInfo(@RequestBody String searchString) {
