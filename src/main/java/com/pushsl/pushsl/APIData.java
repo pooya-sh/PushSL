@@ -71,7 +71,6 @@ public class APIData {
     }
 
     private void addToList(List<RealTime> list, JsonObject json, String type) {
-        System.out.println(type);
         JsonArray array = json.get(type).getAsJsonArray();
         Gson gson = new Gson();
         for(int i = 0; i < array.size(); i++) {
