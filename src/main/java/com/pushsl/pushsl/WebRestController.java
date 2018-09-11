@@ -24,7 +24,6 @@ public class WebRestController {
     @Autowired
     Repository repository;
 
-
     @PostMapping("/siteinfo")
     public List<SiteInfo> getSiteInfo(@RequestBody String searchString) {
         return apiData.getSiteInfo(searchString);
