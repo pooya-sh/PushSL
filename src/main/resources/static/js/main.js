@@ -1,26 +1,53 @@
 let UI = {
-    
+    btn: {
+        search: $("#btnSearch"),
+        openEmail: $("#btnOpenEmailForm"),
+        sendReminder: $("#reminderOK"),
+        cancelReminder: $("#reminderCancel"),
+    },
+    input: {
+        date: $("#date"),
+        time: $("#time"),
+        origin: $("#inputOrigin"),
+        destination: $("#inputDestination"),
+        tripIndex: $("#tripIndex"),
+        email: $("#inputReminderEmail"),
+        minutes: $("#inputReminderMinutes"),
+    },
+    container: {
+        logo: $("#logoDiv"),
+        progressBg: $("#backgroundOne"),
+        progressBar: $("#searchProgressBar"),
+        trips: $("#listContainer"),
+        reminderBg: $("#reminderFormBg"),
+        popUp: $("#popUp"),
+        email: $("#emailForm"),
+    },
+    text: {
+        counter: $("#counter"),
+        counterInfo: $("#counterInfo"),
+    },
+
+}
+
+let intern = {
+    tripLocalArray: [],
+    rtCheckInterval: 0,
+    upCounterInterval: 0,
+    chosenTrip: {},
 }
 
 $(document).ready(() => {
-    $("#btnSearch").click(sendSearchForm);
-    $("#date").val(getTodayDate());
-    $("#time").val(getNowTime());
-    $("#reminderCancel").click(cancelReminder);
-    $("#reminderOK").click(startReminder);
-    $("#btnOpenEmailForm").click(openEmailForm);
-    $("#logoDiv").click(() => {
-        document.location.href = "/test";
+    UI.btn.search.click(sendSearchForm);
+    UI.input.date.val(getTodayDate());
+    UI.input.time.val(getNowTime());
+    UI.btn.cancelReminder.click(cancelReminder);
+    UI.btn.sendReminder.click(startReminder);
+    UI.btn.openEmail.click(openEmailForm);
+    UI.container.logo.click(() => {
+        document.location.href = "/";
     });
-}
-);
-
-let tripLocalArray = [];
-let rtCheckInterval = 0;
-let upCounterInterval = 0;
-let fake = 0;
-
-
+});
 
 function getTodayDate() {
     let today = new Date();
@@ -51,7 +78,7 @@ function getNowTime() {
 
 function getOrigins() {
     $("#originList").empty();
-    let textData = $("#inputOrigin").val();
+    let textData = UI.input.origin.val();
     fetch('http://localhost:8080/siteinfo', {
         method: 'post',
         headers: {
@@ -73,7 +100,7 @@ function getOrigins() {
 
 function getDests() {
     $("#destList").empty();
-    let textData = $("#inputDestination").val();
+    let textData = UI.input.destination.val();
     fetch('http://localhost:8080/siteinfo', {
         method: 'post',
         headers: {
@@ -94,14 +121,14 @@ function getDests() {
 }
 
 function searchTrip() {
-    $("#backgroundOne").removeClass('invisible');
-    $("#backgroundOne").addClass('visible');
-    $("#searchProgressBar").attr('aria-valuenow', '10%').css('width', '10%');
-    $("#listContainer").empty();
-    let origin = $("#inputOrigin").val();
-    let destination = $("#inputDestination").val();
-    let date = $("#date").val();
-    let time = $("#time").val();
+    UI.container.progressBg.removeClass('invisible');
+    UI.container.progressBg.addClass('visible');
+    UI.container.progressBar.attr('aria-valuenow', '10%').css('width', '10%');
+    UI.container.trips.empty();
+    let origin = UI.input.origin.val();
+    let destination = UI.input.destination.val();
+    let date = UI.input.date.val();
+    let time = UI.input.time.val();
 
     let obj = {
         originId: origin,
@@ -112,7 +139,7 @@ function searchTrip() {
 
     let str = 'originName=' + origin + '&destName=' + destination + '&date=' + date + '&time=' + time;
 
-    $("#searchProgressBar").attr('aria-valuenow', '98%').css('width', '98%');
+    UI.container.progressBar.attr('aria-valuenow', '98%').css('width', '98%');
 
     fetch('http://localhost:8080/search', {
         method: 'post',
@@ -123,8 +150,8 @@ function searchTrip() {
     }).then(function (response) {
         return response.json();
     }).then(function (data) {
-        $("#searchProgressBar").attr('aria-valuenow', '100%').css('width', '100%');
-        tripLocalArray = data;
+        UI.container.progressBar.attr('aria-valuenow', '100%').css('width', '100%');
+        intern.tripLocalArray = data;
         parseTrip(data);
     });
 
@@ -132,10 +159,10 @@ function searchTrip() {
 }
 
 function validateSearchForm() {
-    if ($("#inputOrigin").val() === "" ||
-        $("#inputDestination").val() === "" ||
-        $("#date").val() === "" ||
-        $("#time").val() === "") {
+    if (UI.input.origin.val() === "" ||
+        UI.input.destination.val() === "" ||
+        UI.input.date.val() === "" ||
+        UI.input.time.val() === "") {
         return false;
     } else {
         return true;
@@ -222,69 +249,68 @@ function parseTrip(output) {
         }
 
         resultDiv.appendChild(tripDiv);
-        $("#listContainer").append(resultDiv);
+        UI.container.trips.append(resultDiv);
         $("#reminderBtn" + row).click(showReminderForm);
-        $("#searchProgressBar").attr('aria-valuenow', '0%').css('width', '0%');
-        $("#backgroundOne").removeClass('visible');
-        $("#backgroundOne").addClass('invisible');
+        UI.container.progressBar.attr('aria-valuenow', '0%').css('width', '0%');
+        UI.container.progressBg.removeClass('visible');
+        UI.container.progressBg.addClass('invisible');
     }
 }
 
 function showReminderForm() {
-    $("#reminderFormBg").removeClass('invisible');
-    $("#reminderFormBg").addClass('visible');
-    $("#tripIndex").val($(this).val());
+    UI.container.reminderBg.removeClass('invisible');
+    UI.container.reminderBg.addClass('visible');
+    UI.input.tripIndex.val($(this).val());
 
-    let chosenTrip = tripLocalArray[$('#tripIndex').val()];
-    let expectedDep = parsedTimeTableTime(chosenTrip.startTime);
-    rtCheckInterval = setInterval(() => {
+    intern.chosenTrip = intern.tripLocalArray[UI.input.tripIndex.val()];
+    let expectedDep = parsedTimeTableTime(intern.chosenTrip.startTime);
+    intern.rtCheckInterval = setInterval(() => {
         fetch('http://localhost:8080/checktime', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(chosenTrip)
+            body: JSON.stringify(intern.chosenTrip)
         }).then(function (response) {
             return response.text();
         }).then(function (data) {
             expectedDep = parseTime(data);
         });
     }, 5000);
-    upCounterInterval = setInterval(() => {
+    intern.upCounterInterval = setInterval(() => {
         updateCounter(new Date(), expectedDep);
     }, 1000);
 }
 
 function cancelReminder() {
-    clearInterval(rtCheckInterval);
-    clearInterval(upCounterInterval);
+    clearInterval(intern.rtCheckInterval);
+    clearInterval(intern.upCounterInterval);
 
-    $("#popUp").css('top', '50%');
-    $("#btnOpenEmailForm").removeClass("myInvisible");
-    $("#emailForm").addClass("myInvisible");
-    $("#reminderOK").addClass("myInvisible");
+    UI.container.popUp.css('top', '50%');
+    UI.btn.openEmail.removeClass("myInvisible");
+    UI.container.email.addClass("myInvisible");
+    UI.btn.sendReminder.addClass("myInvisible");
 
-    $("#reminderFormBg").removeClass('visible');
-    $("#reminderFormBg").addClass('invisible');
-    $("#counter").text('00:00');
-    $("#btnOpenEmailForm").prop('disabled', false);
+    UI.container.reminderBg.removeClass('visible');
+    UI.container.reminderBg.addClass('invisible');
+    UI.text.counter.text('00:00');
+    UI.btn.openEmail.prop('disabled', false);
 
 
 }
 
 function startReminder() {
-    let chosenTrip = tripLocalArray[$('#tripIndex').val()];
-    let email = $("#inputReminderEmail").val();
-    let reminderMinutes = $("#inputReminderMinutes").val();
-    chosenTrip.email = email;
-    chosenTrip.reminderMinutes = reminderMinutes;
-    // let expectedDep = parsedTimeTableTime(chosenTrip.startTime);
+    intern.chosenTrip = intern.tripLocalArray[UI.input.tripIndex.val()];
+    let email = UI.input.email.val();
+    let reminderMinutes = UI.input.minutes.val();
+    intern.chosenTrip.email = email;
+    intern.chosenTrip.reminderMinutes = reminderMinutes;
     fetch('http://localhost:8080/reminder', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(chosenTrip)
+        body: JSON.stringify(intern.chosenTrip)
     }).then(function (response) {
         return response.json();
     }).then(function (data) {
@@ -305,22 +331,22 @@ function updateCounter(now, departure) {
     console.log('timediff ' + diff)
 
     if (diff < 0) {
-        $("#counter").text('00:00');
-        $("#counterInfo").text('Avgångstiden har passerat');
-        $("#btnOpenEmailForm").prop('disabled', true);
+        UI.text.counter.text('00:00');
+        UI.text.counterInfo.text('Avgångstiden har passerat');
+        UI.btn.openEmail.prop('disabled', true);
     } else {
-        $("#counterInfo").text('Avgång om');
-        $("#btnOpenEmailForm").prop('disabled', false);
+        UI.text.counterInfo.text('Avgång om');
+        UI.btn.openEmail.prop('disabled', false);
         let counterMinutes = Math.floor(diff / 60000);
         let counterSeconds = Math.floor((diff % 60000) / 1000);
-        alertDeparture(counterSeconds, counterMinutes, $("#inputReminderMinutes").val());
+        alertDeparture(counterSeconds, counterMinutes, UI.input.minutes.val());
         if (counterSeconds < 10) {
             counterSeconds = '0' + counterSeconds;
         }
         if (counterMinutes < 10) {
             counterMinutes = '0' + counterMinutes;
         }
-        $("#counter").text(counterMinutes + ':' + counterSeconds);
+        UI.text.counter.text(counterMinutes + ':' + counterSeconds);
     }
 }
 
@@ -351,15 +377,15 @@ function parsedTimeTableTime(timeTableTime) {
 }
 
 function openEmailForm() {
-    $("#btnOpenEmailForm").addClass("myInvisible");
-    $("#emailForm").removeClass("myInvisible");
-    $("#reminderOK").removeClass("myInvisible");
+    UI.btn.openEmail.addClass("myInvisible");
+    UI.container.email.removeClass("myInvisible");
+    UI.btn.sendReminder.removeClass("myInvisible");
 }
 
 function alertDeparture(seconds, minutes, reminderMinutes) {
     console.log('reminder minutes: ' + reminderMinutes);
     if (reminderMinutes == minutes && seconds == 0) {
-        $("#popUp").css('top', '15%');
+        UI.container.popUp.css('top', '15%');
 
     }
 }
