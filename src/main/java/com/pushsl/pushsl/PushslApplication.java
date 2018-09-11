@@ -7,9 +7,5 @@ public class PushslApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(PushslApplication.class, args);
-
-
     }
-
-
 }
