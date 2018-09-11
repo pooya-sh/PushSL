@@ -9,6 +9,7 @@ html {
 #customBody {
     background-color: rgba(1, 156, 213, 1);
     font-family: 'Nunito', sans-serif;
+    overflow-x: hidden;
     /*background-color: black !important;*/
     /*background: url("/img/pushsl-bgimg.jpg") no-repeat center bottom;*/
     /*background-size: cover;*/
