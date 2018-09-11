@@ -1,6 +1,6 @@
 package com.pushsl.pushsl;
 
-import com.pushsl.pushsl.Objects.RealTimeBusesAndMetros;
+import com.pushsl.pushsl.Objects.RealTime;
 import com.pushsl.pushsl.Objects.SiteInfo;
 import com.pushsl.pushsl.Objects.Trip;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class PushslApplicationTests {
 
     @Test
     public void testRealTimeAPI() {
-        List<RealTimeBusesAndMetros> list = apiData.getRealTimeInfo("9192", "2");
+        List<RealTime> list = apiData.getRealTimeInfo("9192", "2");
         list.forEach(System.out::println);
     }
 
