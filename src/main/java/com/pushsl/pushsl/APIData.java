@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.pushsl.pushsl.Objects.Leg;
-import com.pushsl.pushsl.Objects.RealTimeBusesAndMetros;
+import com.pushsl.pushsl.Objects.RealTime;
 import com.pushsl.pushsl.Objects.SiteInfo;
 import com.pushsl.pushsl.Objects.Trip;
 import org.springframework.stereotype.Component;
@@ -47,7 +47,7 @@ public class APIData {
 
     }
 
-    public List<RealTimeBusesAndMetros> getRealTimeInfo(String siteId, String timewindow) {
+    public List<RealTime> getRealTimeInfo(String siteId, String timewindow) {
         String format = "json";
         String key = System.getenv("RealTimeKey");
 
@@ -59,20 +59,32 @@ public class APIData {
         String result = fetch(urlString);
 
         JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
-        JsonArray metroArray = jsonObject.get("ResponseData").getAsJsonObject().get("Metros").getAsJsonArray();
-        List<RealTimeBusesAndMetros> realTimeList = new ArrayList<>();
-
+        List<RealTime> realTimeList = new ArrayList<>();
         Gson gson = new Gson();
-        for (int i = 0; i < metroArray.size(); i++) {
-            realTimeList.add(gson.fromJson(metroArray.get(i), RealTimeBusesAndMetros.class));
-        }
 
+        JsonArray metroArray = jsonObject.get("ResponseData").getAsJsonObject().get("Metros").getAsJsonArray();
+        for (int i = 0; i < metroArray.size(); i++) {
+            realTimeList.add(gson.fromJson(metroArray.get(i), RealTime.class));
+        }
         JsonArray busArray = jsonObject.get("ResponseData").getAsJsonObject().get("Buses").getAsJsonArray();
         for (int i = 0; i < busArray.size(); i++) {
-            realTimeList.add(gson.fromJson(busArray.get(i), RealTimeBusesAndMetros.class));
+            realTimeList.add(gson.fromJson(busArray.get(i), RealTime.class));
+        }
+        JsonArray trainArray = jsonObject.get("ResponseData").getAsJsonObject().get("Trains").getAsJsonArray();
+        for (int i = 0; i < trainArray.size(); i++) {
+            realTimeList.add(gson.fromJson(trainArray.get(i), RealTime.class));
+        }
+        JsonArray tramsArray = jsonObject.get("ResponseData").getAsJsonObject().get("Trams").getAsJsonArray();
+        for (int i = 0; i < trainArray.size(); i++) {
+            realTimeList.add(gson.fromJson(tramsArray.get(i), RealTime.class));
+        }
+        JsonArray shipsArray = jsonObject.get("ResponseData").getAsJsonObject().get("Ships").getAsJsonArray();
+        for (int i = 0; i < shipsArray.size(); i++) {
+            realTimeList.add(gson.fromJson(shipsArray.get(i), RealTime.class));
         }
         return realTimeList;
     }
+
 
     public List<Trip> tripInfo(String originId, String destId, String date, String time) {
         String format = "json";
@@ -107,9 +119,9 @@ public class APIData {
 
     public String getRemainingTime(Trip trip) {
 
-        List<RealTimeBusesAndMetros> realTimeList = getRealTimeInfo(trip.originId, "30");
+        List<RealTime> realTimeList = getRealTimeInfo(trip.originId, "30");
 
-        for(RealTimeBusesAndMetros rt : realTimeList) {
+        for(RealTime rt : realTimeList) {
             if(rt.JourneyNumber.equals(trip.legList.get(0).number)) {
                 return rt.ExpectedDateTime;
             }

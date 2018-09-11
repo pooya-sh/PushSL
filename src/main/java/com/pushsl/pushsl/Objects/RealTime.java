@@ -1,6 +1,6 @@
 package com.pushsl.pushsl.Objects;
 
-public class RealTimeBusesAndMetros {
+public class RealTime {
     public String TransportMode;
     public String GroupOfLine;
     public String DisplayTime;
@@ -14,7 +14,7 @@ public class RealTimeBusesAndMetros {
 
     @Override
     public String toString() {
-        return "RealTimeBusesAndMetros{" +
+        return "RealTime{" +
                 "TransportMode='" + TransportMode + '\'' +
                 ", GroupOfLine='" + GroupOfLine + '\'' +
                 ", DisplayTime='" + DisplayTime + '\'' +
