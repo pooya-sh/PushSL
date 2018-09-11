@@ -1,8 +1,9 @@
 let UI = {
     btn: {
         search: $("#btnSearch"),
-        openEmail: $("#btnOpenEmailForm"),
-        sendReminder: $("#reminderOK"),
+        sendWebReminder: $("#btnReminderWeb"),
+        sendMailReminder: $("#btnReminderMail"),
+        showMailReminder: $("#btnShowReminderMail"),
         cancelReminder: $("#reminderCancel"),
     },
     input: {
@@ -26,6 +27,8 @@ let UI = {
     text: {
         counter: $("#counter"),
         counterInfo: $("#counterInfo"),
+        searchFormInfo: $("#searchFormInfo"),
+        reminderFormInfo: $("#reminderFormInfo"),
     },
 
 }
@@ -35,15 +38,17 @@ let intern = {
     rtCheckInterval: 0,
     upCounterInterval: 0,
     chosenTrip: {},
+    expectedDep: new Date(),
 }
 
 $(document).ready(() => {
-    UI.btn.search.click(sendSearchForm);
     UI.input.date.val(getTodayDate());
     UI.input.time.val(getNowTime());
+    UI.btn.search.click(sendSearchForm);
     UI.btn.cancelReminder.click(cancelReminder);
-    UI.btn.sendReminder.click(startReminder);
-    UI.btn.openEmail.click(openEmailForm);
+    UI.btn.sendWebReminder.click(sendWebReminderForm);
+    UI.btn.sendMailReminder.click(setMailReminder);
+    UI.btn.showMailReminder.click(openEmailForm);
     UI.container.logo.click(() => {
         document.location.href = "/";
     });
@@ -120,6 +125,36 @@ function getDests() {
     });
 }
 
+function isSearchTripFormValid() {
+    if (UI.input.origin.val() === "" ||
+        UI.input.destination.val() === "" ||
+        UI.input.date.val() === "" ||
+        UI.input.time.val() === "") {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function isReminderFormValid() {
+    if (UI.input.tripIndex.val() === "" ||
+        UI.input.minutes.val() === "" ||
+        UI.input.email.val() === "") {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function isWebReminderFormValid() {
+    if (UI.input.tripIndex.val() === "" ||
+        UI.input.minutes.val() === "") {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 function searchTrip() {
     UI.container.progressBg.removeClass('invisible');
     UI.container.progressBg.addClass('visible');
@@ -158,23 +193,99 @@ function searchTrip() {
 
 }
 
-function validateSearchForm() {
-    if (UI.input.origin.val() === "" ||
-        UI.input.destination.val() === "" ||
-        UI.input.date.val() === "" ||
-        UI.input.time.val() === "") {
-        return false;
+function sendSearchForm() {
+    if (isSearchTripFormValid()) {
+        UI.text.searchFormInfo.addClass('invisible');
+        searchTrip();
     } else {
-        return true;
+        UI.text.searchFormInfo.removeClass('invisible');
+        UI.text.searchFormInfo.text('Formuläret tar inte emot tomma fält!');
     }
 }
 
-function sendSearchForm() {
-    if (validateSearchForm()) {
-        searchTrip();
+function sendWebReminderForm() {
+    if (isWebReminderFormValid()) {
+        setWebReminder();
+        UI.input.minutes.prop('disabled', true);
     } else {
-        console.log('Form not valid');
+        UI.text.reminderFormInfo.removeClass('invisible');
+        UI.text.reminderFormInfo.text('Formuläret tar inte emot tomma fält!');
     }
+}
+
+function sendMailReminderForm() {
+    if (isReminderFormValid()) {
+        setMailReminder();
+        UI.input.minutes.prop('disabled', true);
+        UI.input.email.prop('disabled', true);
+    } else {
+        UI.text.reminderFormInfo.removeClass('invisible');
+        UI.text.reminderFormInfo.text('Påminnelse sparades INTE i databasen');
+    }
+}
+
+function openReminderForm() {
+    UI.container.reminderBg.removeClass('invisible');
+    UI.container.reminderBg.addClass('visible');
+    UI.input.tripIndex.val($(this).val());
+
+    intern.chosenTrip = intern.tripLocalArray[$(this).val()];
+    intern.expectedDep = parsedTimeTableTime(intern.chosenTrip.rtStartTime);
+    startCounter();
+}
+
+function closeReminderForm() {
+    UI.container.reminderBg.removeClass('visible');
+    UI.container.reminderBg.addClass('invisible');
+    UI.input.tripIndex.val('');
+    UI.text.counter.text('00:00');
+    UI.text.reminderFormInfo.addClass('invisible');
+
+    intern.chosenTrip = {};
+    intern.expectedDep = new Date();
+    stopCounter();
+}
+
+function openEmailForm() {
+    UI.container.email.removeClass("myInvisible");
+    UI.btn.sendWebReminder.addClass('myInvisible');
+    UI.btn.sendMailReminder.removeClass('myInvisible');
+}
+
+function closeEmailForm() {
+    UI.input.email.val('');
+    UI.input.minutes.val('10');
+
+    UI.input.minutes.prop('disabled', false);
+    UI.input.email.prop('disabled', false);
+
+    UI.container.email.addClass("myInvisible");
+    UI.btn.sendMailReminder.addClass('myInvisible');
+    UI.btn.sendWebReminder.removeClass('myInvisible');
+}
+
+function startCounter() {
+    intern.rtCheckInterval = setInterval(() => {
+        fetch('http://localhost:8080/checktime', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(intern.chosenTrip)
+        }).then(function (response) {
+            return response.text();
+        }).then(function (data) {
+            intern.expectedDep = parseTime(data);
+        });
+    }, 5000);
+    intern.upCounterInterval = setInterval(() => {
+        updateCounter(new Date(), intern.expectedDep);
+    }, 1000);
+}
+
+function stopCounter() {
+    clearInterval(intern.rtCheckInterval);
+    clearInterval(intern.upCounterInterval);
 }
 
 
@@ -250,61 +361,23 @@ function parseTrip(output) {
 
         resultDiv.appendChild(tripDiv);
         UI.container.trips.append(resultDiv);
-        $("#reminderBtn" + row).click(showReminderForm);
+        $("#reminderBtn" + row).click(openReminderForm);
         UI.container.progressBar.attr('aria-valuenow', '0%').css('width', '0%');
         UI.container.progressBg.removeClass('visible');
         UI.container.progressBg.addClass('invisible');
     }
 }
 
-function showReminderForm() {
-    UI.container.reminderBg.removeClass('invisible');
-    UI.container.reminderBg.addClass('visible');
-    UI.input.tripIndex.val($(this).val());
-
-    intern.chosenTrip = intern.tripLocalArray[UI.input.tripIndex.val()];
-    let expectedDep = parsedTimeTableTime(intern.chosenTrip.startTime);
-    intern.rtCheckInterval = setInterval(() => {
-        fetch('http://localhost:8080/checktime', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(intern.chosenTrip)
-        }).then(function (response) {
-            return response.text();
-        }).then(function (data) {
-            expectedDep = parseTime(data);
-        });
-    }, 5000);
-    intern.upCounterInterval = setInterval(() => {
-        updateCounter(new Date(), expectedDep);
-    }, 1000);
-}
-
 function cancelReminder() {
-    clearInterval(intern.rtCheckInterval);
-    clearInterval(intern.upCounterInterval);
-
-    UI.container.popUp.css('top', '50%');
-    UI.btn.openEmail.removeClass("myInvisible");
-    UI.container.email.addClass("myInvisible");
-    UI.btn.sendReminder.addClass("myInvisible");
-
-    UI.container.reminderBg.removeClass('visible');
-    UI.container.reminderBg.addClass('invisible');
-    UI.text.counter.text('00:00');
-    UI.btn.openEmail.prop('disabled', false);
-
-
+    stopCounter();
+    resetDepartureAlert();
+    closeEmailForm()
+    closeReminderForm();
 }
 
-function startReminder() {
-    intern.chosenTrip = intern.tripLocalArray[UI.input.tripIndex.val()];
-    let email = UI.input.email.val();
-    let reminderMinutes = UI.input.minutes.val();
-    intern.chosenTrip.email = email;
-    intern.chosenTrip.reminderMinutes = reminderMinutes;
+function setMailReminder() {
+    intern.chosenTrip.email = UI.input.email.val();
+    intern.chosenTrip.reminderMinutes = UI.input.minutes.val();
     fetch('http://localhost:8080/reminder', {
         method: 'post',
         headers: {
@@ -315,31 +388,43 @@ function startReminder() {
         return response.json();
     }).then(function (data) {
         if (data) {
-            console.log('Reminder set');
+            UI.text.reminderFormInfo.removeClass('invisible');
+            UI.text.reminderFormInfo.text('Påminnelse sparades i databasen');
         } else {
-            console.log('Could not set reminder');
+            UI.text.reminderFormInfo.removeClass('invisible');
+            UI.text.reminderFormInfo.text('Påminnelse sparades INTE i databasen');
         }
-
     });
+}
 
+function setWebReminder() {
+    intern.chosenTrip.reminderMinutes = UI.input.minutes.val();
+    UI.text.reminderFormInfo.removeClass('invisible');
+    UI.text.reminderFormInfo.text('Påminnelse sparades på hemsidan');
 }
 
 function updateCounter(now, departure) {
-    console.log('cnow: ' + now);
-    console.log('cdep: ' + departure);
+    console.log('n:' + now);
+    console.log('d:' + departure);
     let diff = departure - now;
-    console.log('timediff ' + diff)
+    console.log('diff:' + diff);
 
     if (diff < 0) {
         UI.text.counter.text('00:00');
         UI.text.counterInfo.text('Avgångstiden har passerat');
-        UI.btn.openEmail.prop('disabled', true);
+        UI.btn.showMailReminder.prop('disabled', true);
+        UI.btn.sendWebReminder.prop('disabled', true);
+        UI.btn.sendMailReminder.prop('disabled', true);
     } else {
         UI.text.counterInfo.text('Avgång om');
-        UI.btn.openEmail.prop('disabled', false);
+        UI.btn.showMailReminder.prop('disabled', false);
+        UI.btn.sendWebReminder.prop('disabled', false);
+        UI.btn.sendMailReminder.prop('disabled', false);
         let counterMinutes = Math.floor(diff / 60000);
         let counterSeconds = Math.floor((diff % 60000) / 1000);
-        alertDeparture(counterSeconds, counterMinutes, UI.input.minutes.val());
+        if (intern.chosenTrip.reminderMinutes) {
+            alertDeparture(counterSeconds, counterMinutes, intern.chosenTrip.reminderMinutes);
+        }
         if (counterSeconds < 10) {
             counterSeconds = '0' + counterSeconds;
         }
@@ -376,16 +461,15 @@ function parsedTimeTableTime(timeTableTime) {
 
 }
 
-function openEmailForm() {
-    UI.btn.openEmail.addClass("myInvisible");
-    UI.container.email.removeClass("myInvisible");
-    UI.btn.sendReminder.removeClass("myInvisible");
-}
+
 
 function alertDeparture(seconds, minutes, reminderMinutes) {
-    console.log('reminder minutes: ' + reminderMinutes);
     if (reminderMinutes == minutes && seconds == 0) {
-        UI.container.popUp.css('top', '15%');
+        UI.container.popUp.css('top', '12%');
 
     }
+}
+
+function resetDepartureAlert() {
+    UI.container.popUp.css('top', '50%');
 }
