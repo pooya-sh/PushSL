@@ -5,7 +5,6 @@ public class SiteInfo {
     public String SiteId;
     public String Type;
 
-
     @Override
     public String toString() {
         return "SiteInfo{" +

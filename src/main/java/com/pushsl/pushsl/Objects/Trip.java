@@ -1,8 +1,5 @@
 package com.pushsl.pushsl.Objects;
 
-import java.time.Duration;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,9 +43,7 @@ public class Trip {
             minutes = duration.substring(duration.indexOf("T") + 1 , duration.indexOf("M"));
         }
         startDate = legList.get(0).Origin.date;
-
     }
-
 
     @Override
     public String toString() {
@@ -58,5 +53,4 @@ public class Trip {
         }
         return reslut;
     }
-
 }

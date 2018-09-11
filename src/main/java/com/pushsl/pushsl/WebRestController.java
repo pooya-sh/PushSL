@@ -42,12 +42,10 @@ public class WebRestController {
     public boolean addReminder(@RequestBody Trip trip) {
         if(trip != null) {
             try {
-                System.out.println("TRIP NUMBER: `:::" + trip.legList.get(0).number);
                 repository.addData(trip.email, trip.legList.get(0).number, trip.reminderMinutes, apiData.getSiteInfo(trip.legList.get(0).Origin.name).get(0).SiteId);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
             return true;
         }
         else {
@@ -61,12 +59,9 @@ public class WebRestController {
         LocalDateTime startDateTime = LocalDateTime.parse(trip.startDate + " " + trip.startTime, formatter);
         LocalDateTime currentDateTime = LocalDateTime.now();
         Duration timeBetween = Duration.between(currentDateTime, startDateTime);
-        //System.out.println(timeBetween.getSeconds() + " seconds left");
         if(timeBetween.getSeconds() > 1800) {
-            //System.out.println("more than 30 minutes left, fetching timetable time....");
             return trip.startDate + "T" + trip.startTime;
         } else {
-            //System.out.println("less than 30 minutes left, fetching real time");
             String s = apiData.getRemainingTime(trip);
             System.out.println(s);
             return s;
