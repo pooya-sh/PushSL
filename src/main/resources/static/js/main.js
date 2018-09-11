@@ -1,3 +1,7 @@
+let UI = {
+    
+}
+
 $(document).ready(() => {
     $("#btnSearch").click(sendSearchForm);
     $("#date").val(getTodayDate());
@@ -14,6 +18,9 @@ $(document).ready(() => {
 let tripLocalArray = [];
 let rtCheckInterval = 0;
 let upCounterInterval = 0;
+let fake = 0;
+
+
 
 function getTodayDate() {
     let today = new Date();
@@ -87,8 +94,8 @@ function getDests() {
 }
 
 function searchTrip() {
-    $("#searchProgressBg").removeClass('invisible');
-    $("#searchProgressBg").addClass('visible');
+    $("#backgroundOne").removeClass('invisible');
+    $("#backgroundOne").addClass('visible');
     $("#searchProgressBar").attr('aria-valuenow', '10%').css('width', '10%');
     $("#listContainer").empty();
     let origin = $("#inputOrigin").val();
@@ -218,8 +225,8 @@ function parseTrip(output) {
         $("#listContainer").append(resultDiv);
         $("#reminderBtn" + row).click(showReminderForm);
         $("#searchProgressBar").attr('aria-valuenow', '0%').css('width', '0%');
-        $("#searchProgressBg").removeClass('visible');
-        $("#searchProgressBg").addClass('invisible');
+        $("#backgroundOne").removeClass('visible');
+        $("#backgroundOne").addClass('invisible');
     }
 }
 
@@ -252,6 +259,7 @@ function cancelReminder() {
     clearInterval(rtCheckInterval);
     clearInterval(upCounterInterval);
 
+    $("#popUp").css('top', '50%');
     $("#btnOpenEmailForm").removeClass("myInvisible");
     $("#emailForm").addClass("myInvisible");
     $("#reminderOK").addClass("myInvisible");
@@ -260,6 +268,7 @@ function cancelReminder() {
     $("#reminderFormBg").addClass('invisible');
     $("#counter").text('00:00');
     $("#btnOpenEmailForm").prop('disabled', false);
+
 
 }
 
@@ -294,6 +303,7 @@ function updateCounter(now, departure) {
     console.log('cdep: ' + departure);
     let diff = departure - now;
     console.log('timediff ' + diff)
+
     if (diff < 0) {
         $("#counter").text('00:00');
         $("#counterInfo").text('Avgångstiden har passerat');
@@ -303,6 +313,7 @@ function updateCounter(now, departure) {
         $("#btnOpenEmailForm").prop('disabled', false);
         let counterMinutes = Math.floor(diff / 60000);
         let counterSeconds = Math.floor((diff % 60000) / 1000);
+        alertDeparture(counterSeconds, counterMinutes, $("#inputReminderMinutes").val());
         if (counterSeconds < 10) {
             counterSeconds = '0' + counterSeconds;
         }
@@ -325,7 +336,7 @@ function parseTime(dateStr) {
     let m = dateStr.substring(14, 16);
     let s = dateStr.substring(17, 19);
     let parsedDate = new Date(year, month, day, h, m, s);
-    console.log('parsed: ' + parsedDate);
+    // console.log('parsed: ' + parsedDate);
     return parsedDate;
 }
 
@@ -343,4 +354,12 @@ function openEmailForm() {
     $("#btnOpenEmailForm").addClass("myInvisible");
     $("#emailForm").removeClass("myInvisible");
     $("#reminderOK").removeClass("myInvisible");
+}
+
+function alertDeparture(seconds, minutes, reminderMinutes) {
+    console.log('reminder minutes: ' + reminderMinutes);
+    if (reminderMinutes == minutes && seconds == 0) {
+        $("#popUp").css('top', '15%');
+
+    }
 }
