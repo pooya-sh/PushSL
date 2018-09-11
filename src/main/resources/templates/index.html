@@ -27,10 +27,10 @@
 
 
     <div id="reminderFormBg" class="invisible">
-        <div id="popUp" class="col-10 col-lg-3 bg-warning">
-            <p class="h1">Nu är det dags att gå</p>
+        <div id="popUp" class="col-10 col-lg-5 bg-warning">
+            <p class="h1 text-center">Nu är det dags att gå</p>
         </div>
-        <div id="reminderFormDiv" class="col-12 col-lg-4">
+        <div id="reminderFormDiv" class="col-12 col-lg-6">
             <div class="d-flex justify-content-end mt-2">
                 <button class="btn btn-danger" id="reminderCancel" type="button">
                     <i class="fas fa-times text-white"></i>
@@ -44,20 +44,26 @@
                 <form id="reminderForm" class="col-12 col-lg-10 mb-5">
                     <input id="tripIndex" type="hidden" />
                     <div class="form-group">
+                        <p id="reminderFormInfo" class="invisible text-center">Reminder Form Info</p>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-inline d-flex justify-content-center">
+                            <span>Påminnelse&emsp;</span>
+                            <input id="inputReminderMinutes" type="number" value="10" min="1" max="120" class="text-center form-control col-2" />
+                            <span>&emsp;minuter</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col text-center">innan avgång</label>
+                        </div>
                         <div id="emailForm" class="form-group myInvisible">
-                            <div class="form-inline d-flex justify-content-center">
-                                <span>Påminnelse&emsp;</span>
-                                <input id="inputReminderMinutes" type="number" value="10" min="1" max="120" class="text-center form-control col-2" />
-                                <span>&emsp;minuter</span>
-                            </div>
                             <div class="form-group">
-                                <label class="col text-center">innan avgång</label>
                                 <input id="inputReminderEmail" type="email" class="form-control form-control-lg" placeholder="mail@exempel.com" />
                             </div>
                         </div>
-                        <div class="form-group">
-                            <button class="btn col myInvisible btnHover" id="reminderOK" type="button">Påminn mig!</button>
-                            <button class="btn col btnHover" id="btnOpenEmailForm" type="button">Påminnelse</button>
+                        <div class="form-inline">
+                            <button class="btn col-6 btnHover" id="btnShowReminderMail" type="button"><i class="fas fa-envelope"></i></button>
+                            <button class="btn col-6 btnHover" id="btnReminderWeb" type="button"><i class="fas fa-check"></i></button>
+                            <button class="btn col-6 btnHover myInvisible" id="btnReminderMail" type="button">Skicka</button>
                         </div>
                     </div>
                 </form>
@@ -73,6 +79,9 @@
                 </header>
                 <div id="formDiv" class="text-white">
                     <form>
+                        <div class="form-group">
+                            <p id="searchFormInfo" class="invisible text-center">Search Form Info</p>
+                        </div>
                         <div class="form-group">
                             <label>Från:</label>
                             <input id="inputOrigin" onkeyup="getOrigins()" class="form-control form-control-lg" type="text" name="from" list="originList"

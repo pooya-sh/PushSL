@@ -159,4 +159,5 @@ i {
     top: 50%;
     transform: translate(-50%, -50%);
     transition: top 0.5s;
+    border-radius: 15px;
 }
