@@ -58,31 +58,25 @@ public class APIData {
 
         String result = fetch(urlString);
 
-        JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
+        JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject().get("ResponseData").getAsJsonObject();
         List<RealTime> realTimeList = new ArrayList<>();
-        Gson gson = new Gson();
 
-        JsonArray metroArray = jsonObject.get("ResponseData").getAsJsonObject().get("Metros").getAsJsonArray();
-        for (int i = 0; i < metroArray.size(); i++) {
-            realTimeList.add(gson.fromJson(metroArray.get(i), RealTime.class));
-        }
-        JsonArray busArray = jsonObject.get("ResponseData").getAsJsonObject().get("Buses").getAsJsonArray();
-        for (int i = 0; i < busArray.size(); i++) {
-            realTimeList.add(gson.fromJson(busArray.get(i), RealTime.class));
-        }
-        JsonArray trainArray = jsonObject.get("ResponseData").getAsJsonObject().get("Trains").getAsJsonArray();
-        for (int i = 0; i < trainArray.size(); i++) {
-            realTimeList.add(gson.fromJson(trainArray.get(i), RealTime.class));
-        }
-        JsonArray tramsArray = jsonObject.get("ResponseData").getAsJsonObject().get("Trams").getAsJsonArray();
-        for (int i = 0; i < trainArray.size(); i++) {
-            realTimeList.add(gson.fromJson(tramsArray.get(i), RealTime.class));
-        }
-        JsonArray shipsArray = jsonObject.get("ResponseData").getAsJsonObject().get("Ships").getAsJsonArray();
-        for (int i = 0; i < shipsArray.size(); i++) {
-            realTimeList.add(gson.fromJson(shipsArray.get(i), RealTime.class));
-        }
+        addToList(realTimeList, jsonObject, "Metros");
+        addToList(realTimeList, jsonObject, "Buses");
+        addToList(realTimeList, jsonObject, "Trains");
+        addToList(realTimeList, jsonObject, "Trams");
+        addToList(realTimeList, jsonObject, "Ships");
+
         return realTimeList;
+    }
+
+    private void addToList(List<RealTime> list, JsonObject json, String type) {
+        System.out.println(type);
+        JsonArray array = json.get(type).getAsJsonArray();
+        Gson gson = new Gson();
+        for(int i = 0; i < array.size(); i++) {
+            list.add(gson.fromJson(array.get(i), RealTime.class));
+        }
     }
 
 
