@@ -509,6 +509,8 @@ function alertDeparture(seconds, minutes, reminderMinutes) {
     if ((reminderMinutes == minutes && seconds == 0) ||
         (reminderMinutes > minutes)) {
         UI.container.popUp.css('top', '12%');
+    } else {
+        resetDepartureAlert();
     }
 }
 
