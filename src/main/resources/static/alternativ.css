@@ -190,3 +190,11 @@ i {
     transition: top 0.3s;
     border-radius: 15px;
 }
+
+#logoLink {
+    position: absolute;
+    display: block;
+    height: 100%;
+    width: 100%;
+    z-index: 100;
+}
