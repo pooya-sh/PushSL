@@ -21,6 +21,7 @@ let UI = {
         progressBar: $("#searchProgressBar"),
         trips: $("#listContainer"),
         reminderBg: $("#reminderFormBg"),
+        reminderFormDiv: $("#reminderFormDiv"),
         popUp: $("#popUp"),
         email: $("#emailForm"),
     },
@@ -47,7 +48,7 @@ $(document).ready(() => {
     UI.btn.search.click(sendSearchForm);
     UI.btn.cancelReminder.click(cancelReminder);
     UI.btn.sendWebReminder.click(sendWebReminderForm);
-    UI.btn.sendMailReminder.click(setMailReminder);
+    UI.btn.sendMailReminder.click(sendMailReminderForm);
     UI.btn.showMailReminder.click(openEmailForm);
     UI.container.logo.click(() => {
         document.location.href = "/";
@@ -200,55 +201,79 @@ function sendSearchForm() {
     } else {
         UI.text.searchFormInfo.removeClass('invisible');
         UI.text.searchFormInfo.text('Formuläret tar inte emot tomma fält!');
+        setTimeout(resetSearchFeedback, 5000);
     }
+}
+
+function resetSearchFeedback() {
+    UI.text.searchFormInfo.addClass('invisible');
 }
 
 function sendWebReminderForm() {
     if (isWebReminderFormValid()) {
+        resetDepartureAlert();
         setWebReminder();
-        UI.input.minutes.prop('disabled', true);
+        // UI.input.minutes.prop('disabled', true);
     } else {
         UI.text.reminderFormInfo.removeClass('invisible');
         UI.text.reminderFormInfo.text('Formuläret tar inte emot tomma fält!');
+        setTimeout(resetReminderFeedback, 5000);
     }
 }
 
 function sendMailReminderForm() {
     if (isReminderFormValid()) {
+        resetDepartureAlert();
         setMailReminder();
-        UI.input.minutes.prop('disabled', true);
         UI.input.email.prop('disabled', true);
     } else {
         UI.text.reminderFormInfo.removeClass('invisible');
-        UI.text.reminderFormInfo.text('Påminnelse sparades INTE i databasen');
+        UI.text.reminderFormInfo.text('Formuläret tar inte emot tomma fält!');
+        setTimeout(resetReminderFeedback, 5000);
     }
+}
+
+function resetReminderFeedback() {
+    UI.text.reminderFormInfo.addClass('invisible');
 }
 
 function openReminderForm() {
     UI.container.reminderBg.removeClass('invisible');
     UI.container.reminderBg.addClass('visible');
+    UI.container.reminderFormDiv.css('top', '50%');
+    UI.container.popUp.css('top', '50%');
+
     UI.input.tripIndex.val($(this).val());
 
     intern.chosenTrip = intern.tripLocalArray[$(this).val()];
-    intern.expectedDep = parsedTimeTableTime(intern.chosenTrip.rtStartTime);
+    if (intern.chosenTrip.rtStartTime === null) {
+        intern.expectedDep = parsedTimeTableTime(intern.chosenTrip.startTime);
+    } else {
+        intern.expectedDep = parsedTimeTableTime(intern.chosenTrip.rtStartTime);
+    }
     startCounter();
 }
 
 function closeReminderForm() {
-    UI.container.reminderBg.removeClass('visible');
-    UI.container.reminderBg.addClass('invisible');
+    UI.container.reminderFormDiv.css('top', '-50%');
+    UI.container.popUp.css('top', '-50%');
     UI.input.tripIndex.val('');
     UI.text.counter.text('00:00');
-    UI.text.reminderFormInfo.addClass('invisible');
-
+    intern.chosenTrip.reminderMinutes = '';
     intern.chosenTrip = {};
     intern.expectedDep = new Date();
     stopCounter();
+    setTimeout(() => {
+        UI.container.reminderBg.removeClass('visible');
+        UI.container.reminderBg.addClass('invisible');
+        UI.text.reminderFormInfo.addClass('invisible');
+    }, 500);
 }
 
 function openEmailForm() {
     UI.container.email.removeClass("myInvisible");
     UI.btn.sendWebReminder.addClass('myInvisible');
+    UI.btn.showMailReminder.addClass('myInvisible');
     UI.btn.sendMailReminder.removeClass('myInvisible');
 }
 
@@ -259,9 +284,12 @@ function closeEmailForm() {
     UI.input.minutes.prop('disabled', false);
     UI.input.email.prop('disabled', false);
 
+    UI.btn.sendMailReminder.prop('disabled', false);
+
     UI.container.email.addClass("myInvisible");
     UI.btn.sendMailReminder.addClass('myInvisible');
     UI.btn.sendWebReminder.removeClass('myInvisible');
+    UI.btn.showMailReminder.removeClass('myInvisible');
 }
 
 function startCounter() {
@@ -308,10 +336,11 @@ function parseTrip(output) {
 
 
         let resultDiv = document.createElement("DIV");
-        resultDiv.classList.add("py-2", "my-3");
-        resultDiv.setAttribute("id", "resultDiv");
+        resultDiv.classList.add("py-2", "my-3", "resultDiv");
+        resultDiv.setAttribute("id", "resultDiv" + row);
         resultDiv.setAttribute("data-toggle", "collapse");
         resultDiv.setAttribute("href", "#detail" + row);
+        resultDiv.style.animationDelay = (row * 0.05) + 's';
 
         let tripDiv = document.createElement("DIV");
         tripDiv.innerHTML = '<div class="d-flex justify-content-between">' +
@@ -327,6 +356,7 @@ function parseTrip(output) {
 
         let list = trip.legList;
 
+        let tableStripe = true;
         for (let detail in list) {
             let leg = list[detail];
             let o = leg.Origin;
@@ -335,24 +365,30 @@ function parseTrip(output) {
             let startTime = o.time.substring(0, 5);
             let endTime = d.time.substring(0, 5);
 
-            console.log(leg.name);
-
-
-            let legIcon = '';
-            if (leg.name === 'TUNNELBANA  13') {
-                legIcon = '<i class="fas fa-subway text-danger"></i>';
+            let legIcon = setTransportIcon(leg.name);
+            let legType = leg.name;
+            if (legType === '') {
+                legType = 'PROMENERA';
+            }
+            let legGoal = leg.direction;
+            console.log(legGoal);
+            if (legGoal === null) {
+                legGoal = d.name;
             }
 
-
-            console.log(legIcon);
 
             let detailDiv = document.createElement("DIV");
             detailDiv.setAttribute("id", "detail" + row);
             detailDiv.classList.add("collapse");
+            let stripe = '';
+            if (tableStripe) {
+                detailDiv.classList.add("bg-light");
+            }
+            tableStripe = !tableStripe;
             detailDiv.innerHTML = '<div id="detailDiv">' +
-                '<div class="dropdown-divider"></div>' +
+                // '<div class="dropdown-divider"></div>' +
                 '<p>&emsp;<i class="fas fa-angle-double-down"></i> <span>' + startTime + '</span> <span>' + o.name + '</span></p>' +
-                '<p>&emsp;&emsp;' + legIcon + '&emsp;<span>' + leg.name + '</span> mot <span>' + leg.direction + '</span></p>' +
+                '<p>&emsp;&emsp;' + legIcon + '&emsp;<span>' + legType + '</span> mot <span>' + legGoal + '</span></p>' +
                 '<p>&emsp;<i class="fas fa-angle-double-right"></i> <span>' + endTime + '</span> <span>' + d.name + '</span></p>' +
                 '</div>'
                 ;
@@ -365,6 +401,8 @@ function parseTrip(output) {
         UI.container.progressBar.attr('aria-valuenow', '0%').css('width', '0%');
         UI.container.progressBg.removeClass('visible');
         UI.container.progressBg.addClass('invisible');
+        window.location.hash = '#listBottom';
+        window.location.hash = '#listContainer';
     }
 }
 
@@ -389,10 +427,13 @@ function setMailReminder() {
     }).then(function (data) {
         if (data) {
             UI.text.reminderFormInfo.removeClass('invisible');
-            UI.text.reminderFormInfo.text('Påminnelse sparades i databasen');
+            UI.text.reminderFormInfo.text('Mailpåminnelse registrerat');
+            setTimeout(resetReminderFeedback, 5000);
+            UI.btn.sendMailReminder.prop('disabled', true);
         } else {
             UI.text.reminderFormInfo.removeClass('invisible');
-            UI.text.reminderFormInfo.text('Påminnelse sparades INTE i databasen');
+            UI.text.reminderFormInfo.text('Kunde inte registrera mailpåminnelse');
+            setTimeout(resetReminderFeedback, 5000);
         }
     });
 }
@@ -400,7 +441,8 @@ function setMailReminder() {
 function setWebReminder() {
     intern.chosenTrip.reminderMinutes = UI.input.minutes.val();
     UI.text.reminderFormInfo.removeClass('invisible');
-    UI.text.reminderFormInfo.text('Påminnelse sparades på hemsidan');
+    UI.text.reminderFormInfo.text('Webbpåminnelse registrerat');
+    setTimeout(resetReminderFeedback, 5000);
 }
 
 function updateCounter(now, departure) {
@@ -452,24 +494,131 @@ function parseTime(dateStr) {
 }
 
 function parsedTimeTableTime(timeTableTime) {
+    console.log(timeTableTime);
     let h = timeTableTime.substring(0, 2);
     let m = timeTableTime.substring(3, 5);
     let s = timeTableTime.substring(6);
     let timeTableDate = new Date();
     timeTableDate.setHours(h, m, s);
     return timeTableDate;
-
 }
 
 
 
 function alertDeparture(seconds, minutes, reminderMinutes) {
-    if (reminderMinutes == minutes && seconds == 0) {
+    if ((reminderMinutes == minutes && seconds == 0) ||
+        (reminderMinutes > minutes)) {
         UI.container.popUp.css('top', '12%');
-
     }
 }
 
 function resetDepartureAlert() {
     UI.container.popUp.css('top', '50%');
+}
+
+function setTransportIcon(input) {
+    let icon = '';
+    let color = '';
+    let style = '';
+    let array = input.split('  ');
+    if (array.length > 1) {
+        console.log(array[0]);
+        switch (array[0]) {
+            case 'TUNNELBANA':
+                icon = 'fas fa-subway';
+                break;
+            case 'PENDELTÅG':
+                icon = 'fas fa-train';
+                break;
+            case 'BUSS':
+                icon = 'fas fa-bus';
+                break;
+            case 'BÅT':
+                icon = 'fas fa-ship';
+                break;
+            case 'LOKALTÅG':
+                icon = 'fas fa-train';
+                break;
+            default:
+                icon = 'fas fa-train';
+                break;
+        }
+        if (array[0] === 'TUNNELBANA') {
+            switch (array[1]) {
+                case '10':
+                case '11':
+                    color = 'text-primary';
+                    break;
+                case '13':
+                case '14':
+                    color = 'text-danger';
+                    break;
+                case '17':
+                case '18':
+                case '19':
+                    color = 'text-success';
+                    break;
+            }
+        }
+        if (array[0] === 'PENDELTÅG') {
+            style = '#FF73D4';
+        }
+        if (array[0] === 'LOKALTÅG') {
+            switch (array[1]) {
+                case '7':
+                    color = 'text-secondary';
+                    break;
+                case '12':
+                    style = '#787AFF';
+                    break;
+                case '21':
+                    style = '#FF4F07';
+                    break;
+                case '22':
+                    color = 'text-warning';
+                    break;
+                case '25':
+                case '26':
+                    color = 'text-info';
+                    break;
+                case '27':
+                case '28':
+                case '29':
+                    style = '#7B35FF';
+                    break;
+            }
+        }
+        if (array[0] === 'BUSS') {
+            switch (array[1]) {
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '6':
+                case '172':
+                case '173':
+                case '176':
+                case '177':
+                case '178':
+                case '179':
+                case '471':
+                case '474':
+                case '670':
+                case '676':
+                case '677':
+                case '873':
+                case '875':
+                    color = 'text-primary';
+                    break;
+                default:
+                    color = 'text-danger';
+                    break;
+            }
+        }
+    } else {
+        icon = 'fas fa-walking';
+    }
+    let i = '<i class=\"' + icon + ' ' + color + '\" style=\"color:' + style + ';\"></i>';
+    console.log(i);
+    return i;
 }
