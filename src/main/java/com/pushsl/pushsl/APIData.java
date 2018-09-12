@@ -116,6 +116,7 @@ public class APIData {
 
         for(RealTime rt : realTimeList) {
             if(rt.JourneyNumber.equals(trip.legList.get(0).number)) {
+                System.out.println(rt.ExpectedDateTime);
                 return rt.ExpectedDateTime;
             }
         }

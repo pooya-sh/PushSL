@@ -31,7 +31,7 @@
             <p class="h1 text-center">Nu är det dags att gå</p>
         </div>
         <div id="reminderFormDiv" class="col-12 col-lg-6">
-            <div class="d-flex justify-content-end mt-2">
+            <div class="d-flex justify-content-end mt-3">
                 <button class="btn btn-danger" id="reminderCancel" type="button">
                     <i class="fas fa-times text-white"></i>
                 </button>
@@ -41,10 +41,10 @@
                 <p id="counter">00:00</p>
             </div>
             <div class="justify-content-center d-flex">
-                <form id="reminderForm" class="col-12 col-lg-10 mb-5">
+                <form id="reminderForm" class="col-12 col-lg-10 mb-3">
                     <input id="tripIndex" type="hidden" />
                     <div class="form-group">
-                        <p id="reminderFormInfo" class="invisible text-center">Reminder Form Info</p>
+                        <p id="reminderFormInfo" class="invisible text-center text-warning">Reminder Form Info</p>
                     </div>
                     <div class="form-group">
                         <div class="form-inline d-flex justify-content-center">
@@ -63,7 +63,7 @@
                         <div class="form-inline">
                             <button class="btn col-6 btnHover" id="btnShowReminderMail" type="button"><i class="fas fa-envelope"></i></button>
                             <button class="btn col-6 btnHover" id="btnReminderWeb" type="button"><i class="fas fa-check"></i></button>
-                            <button class="btn col-6 btnHover myInvisible" id="btnReminderMail" type="button">Skicka</button>
+                            <button class="btn col-12 btnHover myInvisible" id="btnReminderMail" type="button">Skicka</button>
                         </div>
                     </div>
                 </form>
@@ -80,7 +80,7 @@
                 <div id="formDiv" class="text-white">
                     <form>
                         <div class="form-group">
-                            <p id="searchFormInfo" class="invisible text-center">Search Form Info</p>
+                            <p id="searchFormInfo" class="invisible text-center text-warning">Search Form Info</p>
                         </div>
                         <div class="form-group">
                             <label>Från:</label>
@@ -110,6 +110,7 @@
                     <div th:replace="/trip :: trip"></div>
                 </div>
             </div>
+            <div id="listBottom"></div>
         </div>
     </div>
 
