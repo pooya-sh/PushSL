@@ -39,13 +39,10 @@ public class APIData {
         List<SiteInfo> siteInfoList = new ArrayList<>();
 
         Gson gson = new Gson();
-        siteInfoList.stream()
         for (int i = 0; i < siteInfoArray.size(); i++) {
             siteInfoList.add(gson.fromJson(siteInfoArray.get(i), SiteInfo.class));
         }
-
         return siteInfoList;
-
     }
 
     public List<RealTime> getRealTimeInfo(String siteId, String timewindow) {
@@ -75,7 +72,7 @@ public class APIData {
         JsonArray array = json.get(type).getAsJsonArray();
         Gson gson = new Gson();
 
-        for(int i = 0; i < array.size(); i++) {
+        for (int i = 0; i < array.size(); i++) {
             list.add(gson.fromJson(array.get(i), RealTime.class));
         }
     }
