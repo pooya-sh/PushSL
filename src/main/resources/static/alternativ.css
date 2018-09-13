@@ -42,7 +42,8 @@ i {
     background-color: rgba(255, 255, 255, 1);
     border-radius: 10px;
     position: relative;
-    animation-name: left-slide;
+    /* animation-name: left-slide; */
+    animation-name: up-slide;
     animation-duration: 0.5s;
     animation-iteration-count: 1;
 }
@@ -54,6 +55,21 @@ i {
     to {
         left: 0%;
     }
+}
+
+@keyframes up-slide {
+    from {
+        transform: translate(0%, 400%);
+    }
+    to {
+        transform: translate(0%, 0%);
+    }
+}
+
+#abouttDiv {
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 10px;
+    position: relative;
 }
 
 /* ========================= */
@@ -117,6 +133,26 @@ i {
     transition: top 0.3s;
 }
 
+.shake {
+    animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+    backface-visibility: hidden;
+    /* perspective: 10px; */
+}
+
+@keyframes shake {
+    10%, 90% {
+        transform: translate( -48%, -51%);
+    }
+    20%, 80% {
+        transform: translate( -52%, -49%);
+    }
+    30%, 50%, 70% {
+        transform: translate( -49%, -50%);
+    }
+    40%, 60% {
+        transform: translate( -53%, -51%);
+    }
+}
 
 #reminderForm {
     /* background-color: rgba(255, 255, 255, 1); */
@@ -141,7 +177,7 @@ i {
 
 #listContainer {
     position: relative;
-    overflow-x: hidden;
+    overflow: hidden;
     font-size: 1.5em;
 }
 
@@ -197,4 +233,18 @@ i {
     height: 100%;
     width: 100%;
     z-index: 100;
+}
+
+.smallArrows {
+    font-size: 0.5em;
+}
+
+.datalistDiv {
+    background-color: rgba(255, 255, 255, 1);
+    position: relative;
+    max-height: 0px;
+    transition: max-height 0.2s;
+    font-size: 0.3em;
+    border-radius: 5px;
+    overflow: hidden;
 }

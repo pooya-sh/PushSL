@@ -24,6 +24,8 @@ let UI = {
         reminderFormDiv: $("#reminderFormDiv"),
         popUp: $("#popUp"),
         email: $("#emailForm"),
+        originDiv: $("#originDiv"),
+        destDiv: $("#destDiv"),
     },
     text: {
         counter: $("#counter"),
@@ -40,6 +42,7 @@ let intern = {
     upCounterInterval: 0,
     chosenTrip: {},
     expectedDep: new Date(),
+    alertSound: false,
 }
 
 $(document).ready(() => {
@@ -83,47 +86,103 @@ function getNowTime() {
 }
 
 function getOrigins() {
-    $("#originList").empty();
-    let textData = UI.input.origin.val();
-    fetch('http://localhost:8080/siteinfo', {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: textData
-    }).then(function (response) {
-        return response.json();
-    }).then(function (data) {
-        for (let key in data) {
-            let option = document.createElement("OPTION");
-            option.setAttribute("value", data[key].Name);
-            option.classList.add("form-control")
+    resetOriginDiv();
+    if (UI.input.origin.val()) {
+        let textData = UI.input.origin.val();
+        fetch('http://localhost:8080/siteinfo', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: textData
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            for (let key in data) {
+                console.log(data[key].Name);
+                if (data[key].Name) {
+                    if (data[key].Name.toLowerCase().includes(UI.input.origin.val().toLowerCase())) {
+                        let option = document.createElement('BUTTON');
+                        option.classList.add("text-left", "btn", "btn-light", "col-12", "btn-sm");
+                        option.setAttribute('type', 'button');
+                        option.setAttribute('id', 'btnOriginOption' + key);
+                        option.setAttribute('value', data[key].Name);
+                        option.innerHTML = data[key].Name;
+                        UI.container.originDiv.append(option);
+                        $('#btnOriginOption' + key).click(() => {
+                            console.log(event.target.value);
+                            setInputOrigin(event.target.value);
+                        });
+                    }
+                }
+            }
+            UI.container.originDiv.css('max-height', '1000px');
+        });
+    }
+}
 
-            $("#originList").append(option);
-        }
-    });
+function setInputOrigin(input) {
+    UI.input.origin.val(input);
+    resetOriginDiv();
+}
+
+function resetOriginDiv() {
+    UI.container.originDiv.css('max-height', '0px');
+    UI.container.originDiv.empty();
 }
 
 function getDests() {
-    $("#destList").empty();
-    let textData = UI.input.destination.val();
-    fetch('http://localhost:8080/siteinfo', {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: textData
-    }).then(function (response) {
-        return response.json();
-    }).then(function (data) {
-        for (let key in data) {
-            let option = document.createElement("OPTION");
-            option.setAttribute("value", data[key].Name);
-            option.classList.add("form-control")
+    resetDestDiv()
+    if (UI.input.destination.val()) {
+        let textData = UI.input.destination.val();
+        fetch('http://localhost:8080/siteinfo', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: textData
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            for (let key in data) {
+                if (data[key].Name) {
+                    // UI.container.destDiv.children("button").each(() => {
+                    //     console.log($(this));
+                    //     if ($(this).attr('id') === 'btnDestOption' + key) {
+                    //         console.log('hej du är här');
+                    //         this.value = data[key].Name;
+                    //     }
+                    // });
 
-            $("#destList").append(option);
-        }
-    });
+
+                    if (data[key].Name.toLowerCase().includes(UI.input.destination.val().toLowerCase())) {
+                        let option = document.createElement('BUTTON');
+                        option.classList.add("text-left", "btn", "btn-light", "col-12", "btn-sm");
+                        option.setAttribute('type', 'button');
+                        option.setAttribute('id', 'btnDestOption' + key);
+                        option.setAttribute('value', data[key].Name);
+                        option.innerHTML = data[key].Name;
+                        UI.container.destDiv.append(option);
+                        $('#btnDestOption' + key).click(() => {
+                            console.log(event.target.value);
+                            setInputDest(event.target.value);
+                        });
+                    }
+                }
+                UI.container.destDiv.css('max-height', '1000px');
+            }
+        });
+    }
+}
+
+function setInputDest(input) {
+    UI.input.destination.val(input);
+    resetDestDiv();
+}
+
+function resetDestDiv() {
+    UI.container.destDiv.css('max-height', '0px');
+    UI.container.destDiv.empty();
 }
 
 function isSearchTripFormValid() {
@@ -303,7 +362,12 @@ function startCounter() {
         }).then(function (response) {
             return response.text();
         }).then(function (data) {
-            intern.expectedDep = parseTime(data);
+            if (data === '') {
+                console.log('inside: true');
+                intern.expectedDep = intern.chosenTrip.startTime;
+            } else {
+                intern.expectedDep = parseTime(data);
+            }
         });
     }, 5000);
     intern.upCounterInterval = setInterval(() => {
@@ -382,14 +446,15 @@ function parseTrip(output) {
             detailDiv.classList.add("collapse");
             let stripe = '';
             if (tableStripe) {
-                detailDiv.classList.add("bg-light");
+                // detailDiv.classList.add("bg-light");
+                detailDiv.style.backgroundColor = '#DEDEDE';
             }
             tableStripe = !tableStripe;
             detailDiv.innerHTML = '<div id="detailDiv">' +
                 // '<div class="dropdown-divider"></div>' +
-                '<p>&emsp;<i class="fas fa-angle-double-down"></i> <span>' + startTime + '</span> <span>' + o.name + '</span></p>' +
+                '<p>&emsp;<i class="fas fa-angle-double-down smallArrows"></i> <span>' + startTime + '</span> <span>' + o.name + '</span></p>' +
                 '<p>&emsp;&emsp;' + legIcon + '&emsp;<span>' + legType + '</span> mot <span>' + legGoal + '</span></p>' +
-                '<p>&emsp;<i class="fas fa-angle-double-right"></i> <span>' + endTime + '</span> <span>' + d.name + '</span></p>' +
+                '<p>&emsp;<i class="fas fa-angle-double-right smallArrows"></i> <span>' + endTime + '</span> <span>' + d.name + '</span></p>' +
                 '</div>'
                 ;
             tripDiv.appendChild(detailDiv);
@@ -508,6 +573,12 @@ function parsedTimeTableTime(timeTableTime) {
 function alertDeparture(seconds, minutes, reminderMinutes) {
     if ((reminderMinutes == minutes && seconds == 0) ||
         (reminderMinutes > minutes)) {
+        if (!alertSound) {
+            let audio = new Audio('/alert.mp3');
+            UI.container.reminderFormDiv.addClass('shake');
+            audio.play();
+            alertSound = !alertSound;
+        }
         UI.container.popUp.css('top', '12%');
     } else {
         resetDepartureAlert();
@@ -516,6 +587,8 @@ function alertDeparture(seconds, minutes, reminderMinutes) {
 
 function resetDepartureAlert() {
     UI.container.popUp.css('top', '50%');
+    alertSound = false;
+    UI.container.reminderFormDiv.removeClass('shake');
 }
 
 function setTransportIcon(input) {
