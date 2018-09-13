@@ -9,6 +9,7 @@ import com.pushsl.pushsl.Objects.Leg;
 import com.pushsl.pushsl.Objects.RealTime;
 import com.pushsl.pushsl.Objects.SiteInfo;
 import com.pushsl.pushsl.Objects.Trip;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -22,14 +23,20 @@ import java.util.stream.Collectors;
 @Component
 public class APIData {
 
+    @Value("${SiteInfoKey}")
+    private String SiteInfoKey;
+    @Value("${RealTimeKey}")
+    private String RealTimeKey;
+    @Value("${PlannerKey}")
+    private String PlannerKey;
+
     public List<SiteInfo> getSiteInfo(String searchString) {
         String format = "json";
-        String key = System.getenv("SiteInfoKey");
         boolean stationsOnly = true;
         int maxResults = 10;
 
         String urlString = "http://api.sl.se/api2/typeahead." + format
-                + "?key=" + key
+                + "?key=" + SiteInfoKey
                 + "&searchstring=" + searchString
                 + "&stationsonly=" + stationsOnly
                 + "&maxresults=" + maxResults;
@@ -51,10 +58,9 @@ public class APIData {
 
     public List<RealTime> getRealTimeInfo(String siteId, String timewindow) {
         String format = "json";
-        String key = System.getenv("RealTimeKey");
 
         String urlString = "http://api.sl.se/api2/realtimedeparturesV4." + format
-                + "?key=" + key
+                + "?key=" + RealTimeKey
                 + "&siteid=" + siteId
                 + "&timewindow=" + timewindow;
 
@@ -83,9 +89,8 @@ public class APIData {
 
     public List<Trip> tripInfo(String originId, String destId, String date, String time) {
         String format = "json";
-        String key = System.getenv("PlannerKey");
         String urlString = "http://api.sl.se/api2/TravelplannerV3/trip." + format
-                + "?key=" + key
+                + "?key=" + PlannerKey
                 + "&originId=" + originId
                 + "&destId=" + destId
                 + "&date=" + date
