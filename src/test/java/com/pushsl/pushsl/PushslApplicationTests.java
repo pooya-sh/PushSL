@@ -1,5 +1,6 @@
 package com.pushsl.pushsl;
 
+import com.pushsl.pushsl.Objects.DBdata;
 import com.pushsl.pushsl.Objects.RealTime;
 import com.pushsl.pushsl.Objects.SiteInfo;
 import com.pushsl.pushsl.Objects.Trip;
@@ -11,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -66,8 +68,8 @@ public class PushslApplicationTests {
     @Test
     public void testGetSQLData() {
         try {
-            var list = repository.listDBdata();
-            for (var l : list) {
+            List<DBdata> list = repository.listDBdata();
+            for (DBdata l : list) {
                 System.out.println(l);
             }
         } catch (SQLException e) {
