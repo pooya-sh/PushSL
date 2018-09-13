@@ -86,13 +86,24 @@
                             <label>Från:</label>
                             <input id="inputOrigin" onkeyup="getOrigins()" class="form-control form-control-lg" type="text" name="from" list="originList"
                             />
-                            <datalist id="originList"></datalist>
+                            <div id="originDiv" class="datalistDiv"></div>
                         </div>
                         <div class="form-group">
                             <label>Till:</label>
                             <input id="inputDestination" onkeyup="getDests()" class="form-control form-control-lg" type="text" name="to" list="destList"
                             />
-                            <datalist id="destList"></datalist>
+                            <div id="destDiv" class="datalistDiv">
+                                <!-- <button class="text-left btn btn-light col-12 btn-sm myInvisible" type="button" id="btnDestOption0"></button>
+                                <button class="text-left btn btn-light col-12 btn-sm myInvisible" type="button" id="btnDestOption1"></button>
+                                <button class="text-left btn btn-light col-12 btn-sm myInvisible" type="button" id="btnDestOption2"></button>
+                                <button class="text-left btn btn-light col-12 btn-sm myInvisible" type="button" id="btnDestOption3"></button>
+                                <button class="text-left btn btn-light col-12 btn-sm myInvisible" type="button" id="btnDestOption4"></button>
+                                <button class="text-left btn btn-light col-12 btn-sm myInvisible" type="button" id="btnDestOption5"></button>
+                                <button class="text-left btn btn-light col-12 btn-sm myInvisible" type="button" id="btnDestOption6"></button>
+                                <button class="text-left btn btn-light col-12 btn-sm myInvisible" type="button" id="btnDestOption7"></button>
+                                <button class="text-left btn btn-light col-12 btn-sm myInvisible" type="button" id="btnDestOption8"></button>
+                                <button class="text-left btn btn-light col-12 btn-sm myInvisible" type="button" id="btnDestOption9"></button> -->
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>När vill du åka?</label>
@@ -111,7 +122,7 @@
                 </div>
             </div>
             <div id="listBottom" class="row d-flex justify-content-center">
-                <a href="/about" class="text-white">Om oss</a>
+                <a href="/about" class="h3 text-white my-4">Om oss</a>
             </div>
         </div>
     </div>
