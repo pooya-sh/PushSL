@@ -24,6 +24,7 @@ public class Repository {
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM Users JOIN Travels ON Users.User_ID = Travels.User_ID")) {
+
             List<DBdata> datalist = new ArrayList<>();
             while (rs.next()) {
                 DBdata dbdata = new DBdata(rs.getString("UserEmail"), rs.getString("JourneyNumberRT"),
