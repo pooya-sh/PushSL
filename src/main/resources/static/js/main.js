@@ -91,8 +91,10 @@ function getOrigins() {
     if (UI.input.origin.val()) {
         UI.container.originProgress.attr('aria-valuenow', '10%').css('width', '10%');
         let textData = UI.input.origin.val();
+
         UI.container.originProgress.attr('aria-valuenow', '98%').css('width', '98%');
-        fetch('http://localhost:8080/siteinfo', {
+        fetch('/siteinfo', {
+
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -139,8 +141,10 @@ function getDests() {
     if (UI.input.destination.val()) {
         UI.container.destProgress.attr('aria-valuenow', '10%').css('width', '10%');
         let textData = UI.input.destination.val();
+
         UI.container.destProgress.attr('aria-valuenow', '98%').css('width', '98%');
-        fetch('http://localhost:8080/siteinfo', {
+        fetch('/siteinfo', {
+          
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -234,7 +238,7 @@ function searchTrip() {
 
     UI.container.progressBar.attr('aria-valuenow', '98%').css('width', '98%');
 
-    fetch('http://localhost:8080/search', {
+    fetch('/search', {
         method: 'post',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -351,7 +355,7 @@ function closeEmailForm() {
 
 function startCounter() {
     intern.rtCheckInterval = setInterval(() => {
-        fetch('http://localhost:8080/checktime', {
+        fetch('/checktime', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -479,7 +483,7 @@ function cancelReminder() {
 function setMailReminder() {
     intern.chosenTrip.email = UI.input.email.val();
     intern.chosenTrip.reminderMinutes = UI.input.minutes.val();
-    fetch('http://localhost:8080/reminder', {
+    fetch('/reminder', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json'
