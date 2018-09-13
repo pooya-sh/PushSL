@@ -218,6 +218,14 @@ i {
     padding: 0;
 }
 
+#progressWrapperSm {
+    height: 2px;
+    margin: 0;
+    padding: 0;
+    border: hidden;
+    background-color: rgba(255, 255, 255, 1)
+}
+
 #popUp {
     position: absolute;
     left: 50%;
@@ -243,8 +251,26 @@ i {
     background-color: rgba(255, 255, 255, 1);
     position: relative;
     max-height: 0px;
-    transition: max-height 0.2s;
+    transition: max-height 0.5s;
     font-size: 0.3em;
     border-radius: 5px;
     overflow: hidden;
+}
+
+#inputOrigin {
+    border-radius: 5px 5px 0px 0px;
+    border-bottom: none;
+}
+
+#inputDestination {
+    border-radius: 5px 5px 0px 0px;
+    border-bottom: none;
+}
+
+#destProgressBar {
+    transition: width 0.2s;
+}
+
+#originProgressBar {
+    transition: width 0.2s;
 }
