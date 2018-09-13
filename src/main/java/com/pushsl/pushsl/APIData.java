@@ -39,6 +39,7 @@ public class APIData {
         List<SiteInfo> siteInfoList = new ArrayList<>();
 
         Gson gson = new Gson();
+        siteInfoList.stream()
         for (int i = 0; i < siteInfoArray.size(); i++) {
             siteInfoList.add(gson.fromJson(siteInfoArray.get(i), SiteInfo.class));
         }
