@@ -26,6 +26,8 @@ let UI = {
         email: $("#emailForm"),
         originDiv: $("#originDiv"),
         destDiv: $("#destDiv"),
+        originProgress: $("#originProgressBar"),
+        destProgress: $("#destProgressBar"),
     },
     text: {
         counter: $("#counter"),
@@ -86,10 +88,13 @@ function getNowTime() {
 }
 
 function getOrigins() {
-    resetOriginDiv();
     if (UI.input.origin.val()) {
+        UI.container.originProgress.attr('aria-valuenow', '10%').css('width', '10%');
         let textData = UI.input.origin.val();
-        fetch('http://localhost:8080/siteinfo', {
+
+        UI.container.originProgress.attr('aria-valuenow', '98%').css('width', '98%');
+        fetch('/siteinfo', {
+
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -98,26 +103,28 @@ function getOrigins() {
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            for (let key in data) {
-                console.log(data[key].Name);
-                if (data[key].Name) {
-                    if (data[key].Name.toLowerCase().includes(UI.input.origin.val().toLowerCase())) {
-                        let option = document.createElement('BUTTON');
-                        option.classList.add("text-left", "btn", "btn-light", "col-12", "btn-sm");
-                        option.setAttribute('type', 'button');
-                        option.setAttribute('id', 'btnOriginOption' + key);
-                        option.setAttribute('value', data[key].Name);
-                        option.innerHTML = data[key].Name;
-                        UI.container.originDiv.append(option);
-                        $('#btnOriginOption' + key).click(() => {
-                            console.log(event.target.value);
+            let elementList = UI.container.originDiv.children();
+            for (let i = 0; i < data.length; i++) {
+                console.log('dataelement: ' + data[i].Name);
+                if (data[i].Name) {
+                    if (data[i].Name.toLowerCase().includes(UI.input.origin.val().toLowerCase())) {
+                        elementList[i].setAttribute('value', data[i].Name);
+                        elementList[i].innerHTML = data[i].Name;
+
+                        elementList[i].classList.remove('myInvisible');
+                        $('#btnOriginOption' + i).click(() => {
                             setInputOrigin(event.target.value);
                         });
+                    } else {
+                        elementList[i].classList.add('myInvisible');
                     }
                 }
             }
             UI.container.originDiv.css('max-height', '1000px');
+            UI.container.originProgress.attr('aria-valuenow', '0%').css('width', '0%');
         });
+    } else {
+        resetOriginDiv();
     }
 }
 
@@ -128,14 +135,16 @@ function setInputOrigin(input) {
 
 function resetOriginDiv() {
     UI.container.originDiv.css('max-height', '0px');
-    UI.container.originDiv.empty();
 }
 
 function getDests() {
-    resetDestDiv()
     if (UI.input.destination.val()) {
+        UI.container.destProgress.attr('aria-valuenow', '10%').css('width', '10%');
         let textData = UI.input.destination.val();
-        fetch('http://localhost:8080/siteinfo', {
+
+        UI.container.destProgress.attr('aria-valuenow', '98%').css('width', '98%');
+        fetch('/siteinfo', {
+          
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -144,34 +153,28 @@ function getDests() {
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            for (let key in data) {
-                if (data[key].Name) {
-                    // UI.container.destDiv.children("button").each(() => {
-                    //     console.log($(this));
-                    //     if ($(this).attr('id') === 'btnDestOption' + key) {
-                    //         console.log('hej du är här');
-                    //         this.value = data[key].Name;
-                    //     }
-                    // });
+            let elementList = UI.container.destDiv.children();
+            for (let i = 0; i < data.length; i++) {
+                console.log('dataelement: ' + data[i].Name);
+                if (data[i].Name) {
+                    if (data[i].Name.toLowerCase().includes(UI.input.destination.val().toLowerCase())) {
+                        elementList[i].setAttribute('value', data[i].Name);
+                        elementList[i].innerHTML = data[i].Name;
 
-
-                    if (data[key].Name.toLowerCase().includes(UI.input.destination.val().toLowerCase())) {
-                        let option = document.createElement('BUTTON');
-                        option.classList.add("text-left", "btn", "btn-light", "col-12", "btn-sm");
-                        option.setAttribute('type', 'button');
-                        option.setAttribute('id', 'btnDestOption' + key);
-                        option.setAttribute('value', data[key].Name);
-                        option.innerHTML = data[key].Name;
-                        UI.container.destDiv.append(option);
-                        $('#btnDestOption' + key).click(() => {
-                            console.log(event.target.value);
+                        elementList[i].classList.remove('myInvisible');
+                        $('#btnDestOption' + i).click(() => {
                             setInputDest(event.target.value);
                         });
+                    } else {
+                        elementList[i].classList.add('myInvisible');
                     }
                 }
-                UI.container.destDiv.css('max-height', '1000px');
             }
+            UI.container.destDiv.css('max-height', '1000px');
+            UI.container.destProgress.attr('aria-valuenow', '0%').css('width', '0%');
         });
+    } else {
+        resetDestDiv();
     }
 }
 
@@ -182,7 +185,6 @@ function setInputDest(input) {
 
 function resetDestDiv() {
     UI.container.destDiv.css('max-height', '0px');
-    UI.container.destDiv.empty();
 }
 
 function isSearchTripFormValid() {
@@ -236,7 +238,7 @@ function searchTrip() {
 
     UI.container.progressBar.attr('aria-valuenow', '98%').css('width', '98%');
 
-    fetch('http://localhost:8080/search', {
+    fetch('/search', {
         method: 'post',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -353,7 +355,7 @@ function closeEmailForm() {
 
 function startCounter() {
     intern.rtCheckInterval = setInterval(() => {
-        fetch('http://localhost:8080/checktime', {
+        fetch('/checktime', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -481,7 +483,7 @@ function cancelReminder() {
 function setMailReminder() {
     intern.chosenTrip.email = UI.input.email.val();
     intern.chosenTrip.reminderMinutes = UI.input.minutes.val();
-    fetch('http://localhost:8080/reminder', {
+    fetch('/reminder', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json'

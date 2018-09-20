@@ -1,6 +1,5 @@
 package com.pushsl.pushsl;
 
-import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -18,7 +17,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 @Component
 public class APIData {
@@ -51,9 +49,7 @@ public class APIData {
         for (int i = 0; i < siteInfoArray.size(); i++) {
             siteInfoList.add(gson.fromJson(siteInfoArray.get(i), SiteInfo.class));
         }
-
         return siteInfoList;
-
     }
 
     public List<RealTime> getRealTimeInfo(String siteId, String timewindow) {
@@ -81,7 +77,8 @@ public class APIData {
     private void addToList(List<RealTime> list, JsonObject json, String type) {
         JsonArray array = json.get(type).getAsJsonArray();
         Gson gson = new Gson();
-        for(int i = 0; i < array.size(); i++) {
+
+        for (int i = 0; i < array.size(); i++) {
             list.add(gson.fromJson(array.get(i), RealTime.class));
         }
     }
@@ -118,21 +115,11 @@ public class APIData {
     }
 
     public String getRemainingTime(Trip trip) {
-
-        String remainingTime = getRealTimeInfo(trip.originId, "30").stream()
+        return getRealTimeInfo(trip.originId, "30").stream()
                 .filter(rt -> rt.JourneyNumber.equals(trip.legList.get(0).number))
                 .map(rt -> rt.ExpectedDateTime)
                 .findFirst()
                 .orElse(null);
-        return remainingTime;
-        
-//        for(RealTime rt : realTimeList) {
-//            if(rt.JourneyNumber.equals(trip.legList.get(0).number)) {
-//                System.out.println(rt.ExpectedDateTime);
-//                return rt.ExpectedDateTime;
-//            }
-//        }
-//        return null;
     }
 
     private String fetch(String urlString) {
